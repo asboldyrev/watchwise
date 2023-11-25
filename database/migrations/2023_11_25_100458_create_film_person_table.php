@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('film_person', function (Blueprint $table) {
             $table->foreignId('film_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('person_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('person_id')->constrained('persons')->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('description');
             $table->string('profession_text');
             $table->enum('profession_key', ['WRITER', 'OPERATOR', 'EDITOR', 'COMPOSER', 'PRODUCER_USSR', 'TRANSLATOR', 'DIRECTOR', 'DESIGN', 'PRODUCER', 'ACTOR', 'VOICE_DIRECTOR', 'UNKNOWN']);
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('film_staff');
+        Schema::dropIfExists('film_person');
     }
 };

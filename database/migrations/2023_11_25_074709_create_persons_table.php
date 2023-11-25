@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('persons', function (Blueprint $table) {
-            $table->unsignedBigInteger('id');
+            $table->unsignedBigInteger('id')->primary();
             $table->json('name');
             $table->enum('sex', ['MALE', 'FEMALE'])->nullable();
             $table->string('growth')->nullable();
@@ -24,7 +24,7 @@ return new class extends Migration
             // $table->string('spouses');
             $table->unsignedTinyInteger('has_awards')->nullable();
             $table->string('profession')->nullable();
-            $table->array('facts');
+            $table->json('facts');
             $table->timestamps();
         });
     }
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('staff');
+        Schema::dropIfExists('persons');
     }
 };

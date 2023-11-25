@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('award_person', function (Blueprint $table) {
             $table->foreignId('award_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('person_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('person_id')->constrained('persons')->cascadeOnUpdate()->cascadeOnDelete();
         });
     }
 
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('award_staff');
+        Schema::dropIfExists('award_person');
     }
 };

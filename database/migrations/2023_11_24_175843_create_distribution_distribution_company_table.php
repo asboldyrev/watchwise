@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('distribution_distribution_company', function (Blueprint $table) {
             $table->foreignId('distribution_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('distribution_company_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('distribution_company_id')->constrained(indexName: 'distribution_company_company_id_foreign')->cascadeOnUpdate()->cascadeOnDelete();
         });
     }
 

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignId('film_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->unsignedTinyInteger('vote')->nullable();
+            $table->timestamp('date');
         });
     }
 
