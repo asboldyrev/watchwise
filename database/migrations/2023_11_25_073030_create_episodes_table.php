@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('episodes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('season_number');
             $table->unsignedTinyInteger('episode_number');
             $table->json('name');
             $table->string('synopsis')->nullable();
             $table->date('release_date')->nullable();
+            $table->foreignId('season_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }
