@@ -10,42 +10,42 @@ class Client
 {
     public function getFilm(int $id)
     {
-        return $this->request('v2.2/films/606646');
+        return $this->request('v2.2/films/'.$id);
     }
 
     public function getSeasons(int $id)
     {
-        return $this->request('v2.2/films/606646/seasons');
+        return $this->request('v2.2/films/'.$id.'/seasons');
     }
 
     public function getOnlineTheaters(int $id)
     {
-        return $this->request('v2.2/films/606646/external_sources');
+        return $this->request('v2.2/films/'.$id.'/external_sources');
     }
 
     public function getVideos(int $id)
     {
-        return $this->request('v2.2/films/606646/videos');
+        return $this->request('v2.2/films/'.$id.'/videos');
     }
 
     public function getAwards(int $id)
     {
-        return $this->request('v2.2/films/606646/awards');
+        return $this->request('v2.2/films/'.$id.'/awards');
     }
 
     public function getDistributions(int $id)
     {
-        return $this->request('v2.2/films/606646/distributions');
+        return $this->request('v2.2/films/'.$id.'/distributions');
     }
 
     public function getImages(int $id)
     {
-        return $this->request('v2.2/films/606646/images');
+        return $this->request('v2.2/films/'.$id.'/images');
     }
 
     public function getSequelsAndPrequels(int $id)
     {
-        return $this->request('v2.1/films/606646/sequels_and_prequels');
+        return $this->request('v2.1/films/'.$id.'/sequels_and_prequels');
     }
 
     public function getStaff(int $id)
@@ -69,6 +69,7 @@ class Client
 
         $headers = [
             'X-API-KEY' => env('KINOPOISK_API_UNOFFICIAL_TOKEN'),
+            'Content-Type' => 'application/json',
         ];
 
         $config = compact('headers');
