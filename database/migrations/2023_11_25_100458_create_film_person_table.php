@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('film_person', function (Blueprint $table) {
             $table->foreignId('film_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('person_id')->constrained('persons')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('description');
-            $table->string('profession_text');
+            $table->string('description')->nullable();
+            $table->string('profession_text')->nullable();
             $table->enum('profession_key', ['WRITER', 'OPERATOR', 'EDITOR', 'COMPOSER', 'PRODUCER_USSR', 'TRANSLATOR', 'DIRECTOR', 'DESIGN', 'PRODUCER', 'ACTOR', 'VOICE_DIRECTOR', 'UNKNOWN']);
         });
     }

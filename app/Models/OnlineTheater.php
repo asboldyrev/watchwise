@@ -16,6 +16,13 @@ class OnlineTheater extends Model implements HasMedia
         'name',
     ];
 
+    public function registerMediaCollections(): void
+    {
+        $this
+            ->addMediaCollection('logo')
+            ->singleFile();
+    }
+
     public function films(): BelongsToMany
     {
         return $this->belongsToMany(Film::class)->withPivot('url');

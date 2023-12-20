@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\DistributionSubType;
+use App\Enums\DistributionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,11 +21,16 @@ class Distribution extends Model
     ];
 
     protected $casts = [
-        'type' => 'enum',
-        'sub_type' => 'enum',
+        'type' => DistributionType::class,
+        'sub_type' => DistributionSubType::class,
         'date' => 'date',
         're_release' => 'boolean',
     ];
+
+    public function film(): BelongsTo
+    {
+        return $this->belongsTo(Film::class);
+    }
 
     public function country(): BelongsTo
     {

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedTinyInteger('episode_number');
             $table->json('name');
-            $table->string('synopsis')->nullable();
+            $table->text('synopsis')->nullable();
             $table->date('release_date')->nullable();
             $table->foreignId('season_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();

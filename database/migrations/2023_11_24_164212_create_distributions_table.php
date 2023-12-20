@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('date')->nullable();
             $table->boolean('re_release')->nullable();
             $table->foreignId('country_id')->nullable()->constrained()->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('film_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }

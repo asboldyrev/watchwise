@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Film extends Model implements HasMedia
 {
@@ -48,9 +49,34 @@ class Film extends Model implements HasMedia
 
     public $incrementing = false;
 
-    public function users(): BelongsToMany
+    public function registerMediaCollections(): void
     {
-        return $this->belongsToMany(User::class)->withPivot('vote');
+        $this
+            ->addMediaCollection('poster')
+            ->singleFile();
+
+        $this
+            ->addMediaCollection('cover')
+            ->singleFile();
+
+        $this
+            ->addMediaCollection('logo')
+            ->singleFile();
+    }
+
+    public function usersWithVotes(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->using(FilmUser::class)->withPivot(['vote', 'date']);
+    }
+
+    public function usersWithSings(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->using(Sing::class)->withPivot(['sin', 'date']);
+    }
+
+    public function watchLists(): BelongsToMany
+    {
+        return $this->belongsToMany(WatchList::class)->using(FilmWatchList::class)->withPivot(['date']);
     }
 
     public function countries(): BelongsToMany
@@ -70,7 +96,7 @@ class Film extends Model implements HasMedia
 
     public function sequelsAndPrequels(): BelongsToMany
     {
-        return $this->belongsToMany(Film::class, 'prequel_sequel', 'film_id', 'related_film_id')->withPivot('type');
+        return $this->belongsToMany(Film::class, 'prequel_sequel', 'film_id', 'related_film_id')->using(FilmPrequelSequel::class)->withPivot('type');
     }
 
     public function seasons(): HasMany
@@ -78,13 +104,18 @@ class Film extends Model implements HasMedia
         return $this->hasMany(Season::class);
     }
 
-    public function award(): HasMany
+    public function distributions(): HasMany
+    {
+        return $this->hasMany(Distribution::class);
+    }
+
+    public function awards(): HasMany
     {
         return $this->hasMany(Award::class);
     }
 
     public function persons(): BelongsToMany
     {
-        return $this->belongsToMany(Person::class)->withPivot(['description', 'profession_text', 'profession_key']);
+        return $this->belongsToMany(Person::class)->using(FilmPerson::class)->withPivot(['description', 'profession_text', 'profession_key']);
     }
 }

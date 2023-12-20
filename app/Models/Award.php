@@ -25,6 +25,11 @@ class Award extends Model implements HasMedia
         'year' => 'integer',
     ];
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('image');
+    }
+
     public function film(): BelongsTo
     {
         return $this->belongsTo(Film::class);
@@ -32,6 +37,6 @@ class Award extends Model implements HasMedia
 
     public function persons(): BelongsToMany
     {
-        return $this->belongsToMany(Person::class);
+        return $this->belongsToMany(Person::class, 'award_person', relatedPivotKey: 'person_id');
     }
 }

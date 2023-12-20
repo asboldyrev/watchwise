@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Sex;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,6 +12,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class Person extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
+
+    public $table = 'persons';
 
     protected $fillable = [
         'id',
@@ -29,7 +32,8 @@ class Person extends Model implements HasMedia
 
     protected $casts = [
         'id' => 'integer',
-        'sex' => 'enum',
+        'name' => 'object',
+        'sex' => Sex::class,
         'growth' => 'integer',
         'birthday' => 'date',
         'death' => 'date',
@@ -38,8 +42,22 @@ class Person extends Model implements HasMedia
         'facts' => 'array',
     ];
 
+    public $incrementing = false;
+
+    public function registerMediaCollections(): void
+    {
+        $this
+            ->addMediaCollection('poster')
+            ->singleFile();
+    }
+
     public function films(): BelongsToMany
     {
-        return $this->belongsToMany(Film::class);
+        return $this->belongsToMany(Film::class)->using(FilmPerson::class)->withPivot(['description', 'profession_text', 'profession_key']);
+    }
+
+    public function awards(): BelongsToMany
+    {
+        return $this->belongsToMany(Award::class, 'award_person', 'person_id');
     }
 }

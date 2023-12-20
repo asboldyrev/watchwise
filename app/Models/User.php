@@ -50,8 +50,13 @@ class User extends Authenticatable
         return $this->hasMany(WatchList::class);
     }
 
-    public function films(): BelongsToMany
+    public function filmsWithVotes(): BelongsToMany
     {
-        return $this->belongsToMany(Film::class)->withPivot('vote');
+        return $this->belongsToMany(Film::class)->using(FilmUser::class)->withPivot(['vote', 'date']);
+    }
+
+    public function filmsWithSings(): BelongsToMany
+    {
+        return $this->belongsToMany(Film::class)->using(Sing::class)->withPivot(['text', 'date']);
     }
 }

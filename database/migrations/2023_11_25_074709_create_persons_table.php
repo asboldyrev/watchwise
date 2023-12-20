@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('persons', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
             $table->json('name');
-            $table->enum('sex', ['MALE', 'FEMALE'])->nullable();
+            $table->enum('sex', ['MALE', 'FEMALE', 'UNKNOWN'])->nullable();
             $table->string('growth')->nullable();
             $table->date('birthday')->nullable();
             $table->date('death')->nullable();

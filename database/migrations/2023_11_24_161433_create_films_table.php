@@ -18,7 +18,7 @@ return new class extends Migration
             $table->json('rating');
             $table->unsignedSmallInteger('year')->nullable();
             $table->unsignedSmallInteger('length')->nullable();
-            $table->string('slogan')->nullable();
+            $table->text('slogan')->nullable();
             $table->text('description')->nullable();
             $table->text('short_description')->nullable();
             $table->enum('type', ['FILM', 'VIDEO', 'TV_SERIES', 'MINI_SERIES', 'TV_SHOW']);
