@@ -57,6 +57,6 @@ class User extends Authenticatable
 
     public function filmsWithSings(): BelongsToMany
     {
-        return $this->belongsToMany(Film::class)->using(Sing::class)->withPivot(['text', 'date']);
+        return $this->belongsToMany(Film::class, 'sings')->using(Sing::class)->withPivot(['text', 'date']);
     }
 }

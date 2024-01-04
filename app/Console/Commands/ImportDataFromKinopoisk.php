@@ -77,10 +77,7 @@ class ImportDataFromKinopoisk extends Command
                 if ($client->hasLimitReached()) {
                     $this->warn('Достигнут лимит запросов к API');
                 }
-
-                Log::debug($exception->getMessage(), (array)$exception);
-                $this->error($exception->getMessage());
-
+                dd($exception);
                 return 1;
             }
 
@@ -88,6 +85,8 @@ class ImportDataFromKinopoisk extends Command
 
             file_put_contents($vote_filename, implode('', $votes));
         }
+
+        $this->info('Импорт оценок завершён');
     }
 
     protected function importWatchLists(User $user, Client $client)
@@ -117,10 +116,7 @@ class ImportDataFromKinopoisk extends Command
                 if ($client->hasLimitReached()) {
                     $this->warn('Достигнут лимит запросов к API');
                 }
-
-                Log::debug($exception->getMessage(), (array)$exception);
-                $this->error($exception->getMessage());
-
+                dd($exception);
                 return 1;
             }
 
@@ -128,5 +124,7 @@ class ImportDataFromKinopoisk extends Command
 
             file_put_contents($watch_list_filename, implode('', $watch_lists));
         }
+
+        $this->info('Импорт списков завершён');
     }
 }

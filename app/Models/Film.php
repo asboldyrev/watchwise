@@ -49,6 +49,43 @@ class Film extends Model implements HasMedia
 
     public $incrementing = false;
 
+    public function getName()
+    {
+        if ($this->name->ru) {
+            return $this->name->ru;
+        }
+
+        return $this->name->en ?: $this->name->original;
+    }
+
+    public function getKinoOgonRating(array|null $rating = null)
+    {
+        if (is_null($rating)) {
+            $rating = $this->rating;
+        }
+
+        if (
+            key_exists('kinopoisk', $rating) &&
+            key_exists('imdb', $rating) &&
+            key_exists('Rotten Tomatoes', $rating) &&
+            key_exists('Metacritic', $rating)
+        ) {
+            return round(
+                (
+                    $rating['kinopoisk']['review'] * 10 +
+                    $rating['imdb']['review'] * 10 +
+                    (
+                        $rating['Metacritic']['review'] +
+                        $rating['Rotten Tomatoes']['review']
+                    ) / 2
+                ) / 3,
+                1
+            );
+        }
+
+        return '-';
+    }
+
     public function registerMediaCollections(): void
     {
         $this

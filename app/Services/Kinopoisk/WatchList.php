@@ -9,7 +9,6 @@ class WatchList
 {
     public static function import(User $user, WatchListData $watchListsData)
     {
-        dd('watchListsData');
         if ($user->filmsWithSings()->where('id', $watchListsData->film->id)->count() == 0) {
             $user->filmsWithSings()->attach($watchListsData->film->id, [
                 'text' => $watchListsData->sing,

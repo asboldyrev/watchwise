@@ -5,12 +5,24 @@ namespace App\Services\Kinopoisk;
 use App\Models\Person as ModelsPerson;
 use App\Services\KinopoiskApiUnofficial\Client;
 use Carbon\Carbon;
+use Exception;
 use GuzzleHttp\Exception\ClientException;
 
 class Person
 {
     public static function import(int|string $personId)
     {
+        $person_replace = [
+            // 'unofficial' => 'official'
+            5492279 => 3683141,
+            6326676 => 4453931,
+            7169658 => 10131931,
+        ];
+
+        if (key_exists($personId, $person_replace)) {
+            $personId = $person_replace[$personId];
+        }
+
         $person = ModelsPerson::find($personId);
 
         if (!$person) {
@@ -49,10 +61,14 @@ class Person
                 'facts' => $person_data->facts,
             ]);
 
-            $person
-                ->addMediaFromUrl($person_data->posterUrl)
-                ->withCustomProperties(['orig_url' => $person_data->posterUrl])
-                ->toMediaCollection('poster');
+            try {
+                $person
+                    ->addMediaFromUrl($person_data->posterUrl)
+                    ->withCustomProperties(['orig_url' => $person_data->posterUrl])
+                    ->toMediaCollection('poster');
+            } catch (Exception $exception) {
+                //
+            }
         }
 
         return $person;

@@ -106,6 +106,7 @@ class Client
 
         if (Cache::has($cache_key)) {
             dump('cache client');
+            Cache::put($cache_key, Cache::get($cache_key), 7 * 24 * 60);
             return Cache::get($cache_key);
         }
 

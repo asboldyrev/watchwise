@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\FilmController;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::view('watch-lists', 'watch-lists');
+
+Route::controller(FilmController::class)->group(function (Router $router) {
+    $router->get('/', 'list');
+    
+    $router->get('films/{film}', 'show')->name('fimls.show');
 });

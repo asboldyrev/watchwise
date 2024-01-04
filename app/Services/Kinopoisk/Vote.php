@@ -11,7 +11,7 @@ class Vote
     {
         if ($user->filmsWithVotes()->where('id', $voteData->film->id)->count() == 0) {
             $user->filmsWithVotes()->attach($voteData->film->id, [
-                'vote' => $voteData->vote,
+                'vote' => $voteData->vote ?? null,
                 'date' => $voteData->date,
             ]);
         }

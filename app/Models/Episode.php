@@ -20,7 +20,7 @@ class Episode extends Model
     protected $casts = [
         'season_number' => 'integer',
         'episode_number' => 'integer',
-        'name' => 'json',
+        'name' => 'object',
         'release_date' => 'date',
     ];
 

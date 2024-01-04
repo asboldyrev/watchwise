@@ -26,9 +26,9 @@ class Film
         /** @var Film $film */
         $film = ModelsFilm::where('id', $filmId)->first();
 
-        $film_data = $client->getFilm($filmId);
-
         if (!$film) {
+            $film_data = $client->getFilm($filmId);
+
             /** @var ModelsFilm $film */
             $film = ModelsFilm::create([
                 'id' => $film_data->kinopoiskId,
@@ -78,19 +78,19 @@ class Film
                 'short' => $film_data->shortFilm,
                 'completed' => $film_data->completed,
             ]);
-        }
 
-        self::syncCountries($film, $film_data->countries);
-        self::syncGenres($film, $film_data->genres);
+            self::syncCountries($film, $film_data->countries);
+            self::syncGenres($film, $film_data->genres);
 
-        if ($film_data->kinopoiskHDId) {
-            self::syncKinopoiskTheater($film, $film_data->kinopoiskHDId);
-        }
+            if ($film_data->kinopoiskHDId) {
+                self::syncKinopoiskTheater($film, $film_data->kinopoiskHDId);
+            }
 
-        self::syncMedia($film, $film_data);
+            self::syncMedia($film, $film_data);
 
-        if ($film_data->serial) {
-            self::syncSeasons($film);
+            if ($film_data->serial) {
+                self::syncSeasons($film);
+            }
         }
 
         self::syncAwards($film);
@@ -263,9 +263,8 @@ class Film
 
         $distributions = $client->getDistributions($film->id);
 
+        $film->distributions()->delete();
         foreach ($distributions->items as $distribution_data) {
-            $film->distributions()->delete();
-
             /**
              * @var Distribution $distribution
              */
@@ -313,12 +312,14 @@ class Film
             if ($exception->getCode() == 404) {
                 return null;
             }
-
-            throw new ClientException(
+            dd(
+                $exception->getTrace(),
                 $exception->getMessage(),
-                $exception->getRequest(),
-                $exception->getResponse()
+                $exception->getFile(),
+                $exception->getLine()
             );
+
+            throw $exception;
         }
 
         $sap_ids = [];
@@ -336,7 +337,24 @@ class Film
     {
         $client = new Client();
 
-        $persons = $client->getStaff($film->id);
+        try {
+            $persons = $client->getStaff($film->id);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() == 404) {
+                return null;
+            }
+            dd(
+                $exception->getTrace(),
+                $exception->getMessage(),
+                $exception->getFile(),
+                $exception->getLine()
+            );
+            throw $exception;
+        }
+
+        if (!isset($persons)) {
+            return 1;
+        }
 
         $person_ids = [];
         foreach ($persons as $person_data) {
