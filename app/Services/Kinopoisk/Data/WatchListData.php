@@ -11,7 +11,7 @@ class WatchListData
 {
     public readonly Film $film;
 
-    public readonly int|string $sing;
+    public readonly int|string|null $sing;
 
     public readonly Carbon $date;
 
@@ -25,9 +25,7 @@ class WatchListData
             $watch_list_data->film = KinopoiskFilm::import($watchListData->film_id);
         }
 
-        if ($watchListData->sing) {
-            $watch_list_data->sing = $watchListData->sing;
-        }
+        $watch_list_data->sing = $watchListData->sing ?: null;
 
         if ($watchListData->date) {
             $watch_list_data->date = Carbon::createFromFormat('d.m.Y, H:i', $watchListData->date);
