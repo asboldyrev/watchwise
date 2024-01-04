@@ -71,11 +71,17 @@
 					</div>
 
 
-					@if ($film->imdb_id)
-						<div class="mt-4">
-							<a href="{{ 'https://www.imdb.com/title/' . $film->imdb_id }}" target="_blank">IMDB</a>
-						</div>
-					@endif
+					<div class="mt-4">
+						@if ($film->imdb_id)
+							<a class="me-3" href="{{ 'https://www.imdb.com/title/' . $film->imdb_id }}" target="_blank">IMDB</a>
+						@endif
+
+						@if ($film->serial)
+							<a href="{{ 'https://www.kinopoisk.ru/series/' . $film->id }}" target="_blank">Кинопоиск</a>
+						@else
+							<a href="{{ 'https://www.kinopoisk.ru/film/840725' . $film->id }}" target="_blank">Кинопоиск</a>
+						@endif
+					</div>
 
 					<div class="mt-4">
 						<div>
