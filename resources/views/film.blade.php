@@ -4,25 +4,18 @@
 
 	<div class="row my-5">
 		<div class="col-sm-4">
-			<h1>{{ $film->getName() }}</h1>
 
-			@if ($film->name->ru && ($film->name->ru || $film->name->original))
-				<h3>({{ $film->name->en ?: $film->name->original }})</h3>
-			@endif
-
-			<img class="img-fluid" src="{{ $film->getFirstMediaUrl('poster') }}">
+			<h1>
+				{{ $film->getName() }}
+				@if ($film->name->ru && ($film->name->ru || $film->name->original))
+					<span class="h4 text-secondary">({{ $film->name->en ?: $film->name->original }})</span>
+				@endif
+			</h1>
 
 			<div class="mb-4">
-				@if (!is_null($film->mpaa))
-					<img width="50" src="{{ asset('icons/film_rating/mpaa/' . $film->mpaa . '.png') }}" alt="{{ trans('pg_rating.' . $film->mpaa) }}" title="{{ trans('pg_rating.' . $film->mpaa) }}">
-				@endif
-				@if (!is_null($film->age_limits))
-					<img width="60" src="{{ asset('icons/film_rating/ru/' . $film->age_limits . '.png') }}" alt="">
-				@endif
+				<x-age-limit :$film />
+				<img class="img-fluid" src="{{ $film->getFirstMediaUrl('poster') }}">
 			</div>
-
-			<p><strong>Год</strong>: {{ $film->year }}</p>
-			<p><strong>Длина</strong>: {{ $film->length }} мин.</p>
 		</div>
 
 		<div class="col-sm-8">
@@ -63,6 +56,8 @@
 				{{-- Основное --}}
 				<div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
 					<div class="mt-4">
+						<p><strong>Год</strong>: {{ $film->year }}</p>
+						<p><strong>Длина</strong>: {{ $film->length }} мин.</p>
 						<p>
 							<em>{{ $film->slogan }}</em>
 						</p>
@@ -145,27 +140,8 @@
 					<div class="tab-pane fade" id="siquels-and-priquels" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
 						<div class="row">
 							@foreach ($film->sequelsAndPrequels as $sequelAndPrequel)
-								<div class="col-sm-4 my-3" id="{{ $sequelAndPrequel->id }}">
-									<a class="card text-decoration-none" href="{{ route('fimls.show', ['film' => $sequelAndPrequel->id]) }}">
-										<img class="card-img-top" src="{{ $sequelAndPrequel->getFirstMediaUrl('poster') }}">
-										<div class="card-body">
-											<h5 class="card-title">{{ $sequelAndPrequel->name->ru ?: $sequelAndPrequel->name->original }}</h5>
-										</div>
-										<ul class="list-group list-group-flush">
-											@if (!is_null($sequelAndPrequel->mpaa))
-												<li class="list-group-item">
-													<img
-														width="50" src="{{ asset('icons/film_rating/mpaa/' . $sequelAndPrequel->mpaa . '.png') }}" alt="{{ trans('pg_rating.' . $sequelAndPrequel->mpaa) }}" title="{{ trans('pg_rating.' . $sequelAndPrequel->mpaa) }}">
-												</li>
-											@endif
-											@if (!is_null($sequelAndPrequel->age_limits))
-												<li class="list-group-item">
-													<img width="60" src="{{ asset('icons/film_rating/ru/' . $sequelAndPrequel->age_limits . '.png') }}" alt="">
-												</li>
-											@endif
-											<li class="list-group-item">{{ trans('enums.' . $sequelAndPrequel->pivot->type->value) }}</li>
-										</ul>
-									</a>
+								<div class="col-sm-3 my-3" id="{{ $sequelAndPrequel->id }}">
+									<x-film-card :film="$sequelAndPrequel" />
 								</div>
 							@endforeach
 						</div>

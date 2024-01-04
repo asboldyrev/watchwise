@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Film;
-
 if (!function_exists('get_vote_class')) {
     function get_vote_class(int $vote)
     {
