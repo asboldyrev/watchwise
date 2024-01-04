@@ -3,9 +3,9 @@
 use App\Models\Film;
 
 if (!function_exists('get_vote_class')) {
-    function get_vote_class(Film $film)
+    function get_vote_class(int $vote)
     {
-        return match ($film->usersWithVotes->first()->pivot->vote) {
+        return match ($vote) {
             0 => 'vote-0',
             1 => 'vote-1',
             2 => 'vote-2',
