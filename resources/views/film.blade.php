@@ -56,6 +56,7 @@
 				{{-- Основное --}}
 				<div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
 					<div class="mt-4">
+						<p><small class="border-secondary rounded-1 text-secondary border px-2 py-1">{{ $film->getSing() }}</small></p>
 						<p><strong>Год</strong>: {{ $film->year }}</p>
 						<p><strong>Длина</strong>: {{ $film->length }} мин.</p>
 						<p>

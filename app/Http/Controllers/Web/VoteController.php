@@ -13,7 +13,7 @@ class VoteController extends Controller
             ::with(['film', 'user'])
             ->whereNotNull('vote')
             ->orderBy('date', 'desc')
-            ->paginate(60);
+            ->paginate(30);
 
         return view('votes')->with('filmUsers', $film_users);
     }

@@ -9,9 +9,9 @@ class WatchListController extends Controller
 {
     public function show(WatchList $watchList)
     {
-        $watch_lists = WatchList::orderBy('name')->get();
+        $watch_lists = WatchList::withCount('films')->orderBy('name')->get();
 
-        $films = $watchList->films()->orderByPivot('date')->paginate(60);
+        $films = $watchList->films()->orderByPivot('date')->paginate(30);
 
         return view('watch-lists')
             ->with('watchLists', $watch_lists)

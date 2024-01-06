@@ -58,6 +58,15 @@ class Film extends Model implements HasMedia
         return $this->name->en ?: $this->name->original;
     }
 
+    public function getSing()
+    {
+        $user = $this->usersWithSings()->first();
+
+        if ($user) {
+            return $user?->pivot?->text;
+        }
+    }
+
     public function getKinoOgonRating(array|null $rating = null)
     {
         if (is_null($rating)) {
@@ -108,7 +117,7 @@ class Film extends Model implements HasMedia
 
     public function usersWithSings(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->using(Sing::class)->withPivot(['sin', 'date']);
+        return $this->belongsToMany(User::class, 'sings')->using(Sing::class)->withPivot(['text']);
     }
 
     public function watchLists(): BelongsToMany

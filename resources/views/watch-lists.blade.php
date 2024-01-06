@@ -6,11 +6,15 @@
 			@foreach ($watchLists as $watch_list)
 				@if ($watch_list->id == $currentWatchList->id)
 					<li class="nav-item">
-						<span class="nav-link active" aria-current="page">{{ $watch_list->name }}</span>
+						<span class="nav-link active" aria-current="page">
+							{{ $watch_list->name }} <small class="ms-1">({{ $watch_list->films_count }})</small>
+						</span>
 					</li>
 				@else
 					<li class="nav-item">
-						<a class="nav-link" href="{{ route('watch-lists.show', ['watchList' => $watch_list]) }}">{{ $watch_list->name }}</a>
+						<a class="nav-link" href="{{ route('watch-lists.show', ['watchList' => $watch_list]) }}">
+							{{ $watch_list->name }} <small class="ms-1">({{ $watch_list->films_count }})</small>
+						</a>
 					</li>
 				@endif
 			@endforeach

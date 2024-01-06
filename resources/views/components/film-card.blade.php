@@ -14,5 +14,8 @@
 
 	<ul class="list-group list-group-flush">
 		<li class="list-group-item">{{ $date->format('d.m.Y H:i') ?: '-' }}</li>
+		@if ($film->getSing())
+			<li class="list-group-item">{{ $film->getSing() }}</li>
+		@endif
 	</ul>
 </a>
