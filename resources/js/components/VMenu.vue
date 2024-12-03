@@ -6,7 +6,9 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
 
+                <SearchForm />
             </div>
         </div>
     </nav>
@@ -14,6 +16,7 @@
 </template>
 
 <script setup>
+    import SearchForm from '@app/components/SearchForm.vue'
 
 </script>
 
