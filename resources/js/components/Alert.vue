@@ -27,4 +27,8 @@
     .toast {
         max-width: 500px;
     }
+
+    .toast-body {
+        max-width: 326px;
+    }
 </style>

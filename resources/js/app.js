@@ -1,8 +1,8 @@
-import './bootstrap';
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import router from '@app/bootstrap/router'
+
+import '@app/bootstrap/echo'
 
 import App from '@app/App.vue'
 
