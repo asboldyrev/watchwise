@@ -32,7 +32,6 @@ class SyncFilmJob implements ShouldQueue, ShouldBeUnique
     public function handle(): void
     {
         Film::syncFilm($this->filmData);
-        sleep(10);
     }
 
     public function uniqueId(): string

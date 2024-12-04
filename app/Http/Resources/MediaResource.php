@@ -14,7 +14,9 @@ class MediaResource extends JsonResource
      */
     public function toArray($request)
     {
-        $urls = [];
+        $urls = [
+            'origin' => $this->getUrl()
+        ];
 
         foreach ($this->generated_conversions as $conversion_name => $has_conversion) {
             if ($has_conversion) {

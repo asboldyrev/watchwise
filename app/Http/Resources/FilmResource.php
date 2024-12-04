@@ -2,11 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Traits\Images;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FilmResource extends JsonResource
 {
+    use Images;
+
     /**
      * Transform the resource into an array.
      *
@@ -14,14 +17,6 @@ class FilmResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $images = [];
-
-        if ($this->relationLoaded('media')) {
-            foreach ($this->media as $media) {
-                $images[$media->collection_name][] = new MediaResource($media);
-            }
-        }
-
         return [
             'id' => $this->id,
             'imdb_id' => $this->imdb_id,
@@ -41,9 +36,10 @@ class FilmResource extends JsonResource
             'short' => $this->short,
             'completed' => $this->completed,
             'age' => __($this->age_limits),
-            'images' => $images,
-            'countries' => $this->whenLoaded('countries'),
-            'genres' => $this->whenLoaded('genres'),
+            'images' => $this->getImages(),
+            'countries' => CountryResource::collection($this->whenLoaded('countries')),
+            'genres' => GenreResource::collection($this->whenLoaded('genres')),
+            'theaters' => TheaterResource::collection($this->whenLoaded('onlineTheaters')),
         ];
     }
 }

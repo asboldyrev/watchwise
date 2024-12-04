@@ -59,6 +59,11 @@ class Film extends Model implements HasMedia
         return $this->belongsToMany(Genre::class);
     }
 
+    public function onlineTheaters(): BelongsToMany
+    {
+        return $this->belongsToMany(OnlineTheater::class)->withPivot('url');
+    }
+
     public function registerMediaCollections(): void
     {
         $this

@@ -91,25 +91,19 @@
                             </div>
                         </div>
 
-                        <!-- @if ($film.onlineTheaters->count())
-							<div class="col-sm-6">
-								<div class="card mt-4">
-									<div class="card-header">Онлайн кинотеатры</div>
-									<ul class="list-group list-group-flush">
-										@foreach ($film.onlineTheaters as $onlineTheater)
-											<li class="list-group-item">
-												<a class="text-decoration-none mx-2" href="{{ $onlineTheater->pivot->url }}">
-													@if ($onlineTheater->media)
-														<img class="img-fluid" width="30" src="{{ $onlineTheater->getFirstMediaUrl('logo', 'logo') }}" alt="">
-													@endif
-													<span>{{ $onlineTheater->name }}</span>
-												</a>
-											</li>
-										@endforeach
-									</ul>
-								</div>
-							</div>
-						@endif -->
+                        <div class="col-sm-6" v-if="film.theaters?.length">
+                            <div class="card mt-4">
+                                <div class="card-header">Онлайн кинотеатры</div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item" v-for="theater in film.theaters">
+                                        <a class="text-decoration-none mx-2" target="_blank" :href="theater.pivot.url">
+                                            <img v-if="theater.images?.logo?.[0]?.urls?.origin" class="img-fluid me-2" width="30" :src="theater.images.logo[0].urls.origin" alt="">
+                                            <span>{{ theater.name }}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
