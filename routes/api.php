@@ -9,5 +9,6 @@ Route
     ->controller(FilmController::class)
     ->group(function (Router $router) {
         $router->post('search', 'search');
+        $router->post('list', 'list');
         $router->post('{film}/show', 'show');
     });

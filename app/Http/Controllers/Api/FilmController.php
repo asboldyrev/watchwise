@@ -6,16 +6,10 @@ use App\Events\FilmImported;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FilmResource as ResourcesFilmResource;
 use App\Http\Resources\KinopoiskUnofficial\FilmResource;
-use App\Jobs\SyncAwardsJob;
 use App\Jobs\SyncFilmJob;
-use App\Jobs\SyncPersonJob;
-use App\Jobs\SyncRelatedFilmsJob;
-use App\Jobs\SyncSeasonsJob;
-use App\Jobs\SyncTheatresJob;
 use App\Models\Film;
 use App\Services\KinopoiskApiUnofficial\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Bus;
 
 class FilmController extends Controller
 {
@@ -26,6 +20,20 @@ class FilmController extends Controller
         $films = $client->searchFilm($query);
 
         return FilmResource::make($films);
+    }
+
+    public function list()
+    {
+        $films = Film
+            ::with([
+                'countries',
+                'genres',
+                'media',
+            ])
+            ->orderBy('year', 'desc')
+            ->paginate();
+
+        return ResourcesFilmResource::collection($films);
     }
 
     public function show(int $filmId)
