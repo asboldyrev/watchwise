@@ -52,15 +52,9 @@
                     </div>
 
                     <div class="mt-4">
-                        <!-- @if ($film.imdb_id)
-							<a class="me-3" href="{{ 'https://www.imdb.com/title/' . $film.imdb_id }}" target="_blank">IMDB</a>
-						@endif -->
-
-                        <!-- @if ($film.serial) -->
-                        <!-- <a href="{{ 'https://www.kinopoisk.ru/series/' . $film.id }}" target="_blank">Кинопоиск</a> -->
-                        <!-- @else -->
-                        <!-- <a href="{{ 'https://www.kinopoisk.ru/film/840725' . $film.id }}" target="_blank">Кинопоиск</a> -->
-                        <!-- @endif -->
+                        <a class="btn btn-outline-secondary btn-sm" v-if="film.serial" :href="`https://www.kinopoisk.ru/series/${film.id}`" target="_blank">Кинопоиск</a>
+                        <a class="btn btn-outline-secondary btn-sm" v-else :href="`https://www.kinopoisk.ru/film/${film.id}`" target="_blank">Кинопоиск</a>
+                        <a v-if="film.imdb_id" class="btn btn-outline-secondary btn-sm ms-2" :href="`https://www.imdb.com/title/${film.imdb_id}`" target="_blank">IMDB</a>
                     </div>
 
                     <div class="mt-4">
