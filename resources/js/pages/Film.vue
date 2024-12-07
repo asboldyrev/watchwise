@@ -49,7 +49,7 @@
 						@endif -->
                             <div>
                                 <div>
-                                    <span v-for="country in film.countries" class="badge text-bg-secondary me-1">{{ country.name }}</span>
+                                    <CountryFlag v-for="country in film.countries" is-text :country="country" />
                                 </div>
 
                                 <div class="mt-2">
