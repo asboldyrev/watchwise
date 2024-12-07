@@ -5,6 +5,7 @@ namespace App\Services\Kinopoisk;
 use App\Models\Country;
 use App\Models\Film as ModelsFilm;
 use App\Models\Genre;
+use App\Services\Country as ServicesCountry;
 use App\Services\KinopoiskApiUnofficial\Client;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\UnreachableUrl;
 use stdClass;
@@ -81,7 +82,17 @@ class Film
         $country_ids = [];
 
         foreach ($countries as $country_data) {
-            $country = Country::firstOrCreate(['name' => $country_data->country]);
+            $country_flag_data = ServicesCountry::findByName($country_data->country);
+            $iso2 = $country_flag_data?->iso2 ?? null;
+
+            if ($iso2) {
+                $iso2 = mb_strtolower($iso2);
+            }
+
+            $country = Country::updateOrCreate(
+                ['name' => $country_data->country],
+                ['iso2' => $iso2]
+            );
 
             $country_ids[] = $country->id;
         }
