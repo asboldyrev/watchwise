@@ -14,23 +14,26 @@ class Seasons
         $client = new Client();
 
         $seasons = $client->getSeasons($film->id);
-        $film->seasons()->delete();
 
         foreach ($seasons->items as $season_data) {
-            $season = $film->seasons()->create([
+            $season = $film->seasons()->firstOrCreate([
                 'number' => $season_data->number,
             ]);
 
             foreach ($season_data->episodes as $episode_data) {
-                $season->episodes()->create([
-                    'episode_number' => $episode_data->episodeNumber,
-                    'name' => [
-                        'ru' => $episode_data->nameRu,
-                        'en' => $episode_data->nameEn,
+                $season->episodes()->updateOrCreate(
+                    [
+                        'episode_number' => $episode_data->episodeNumber
                     ],
-                    'synopsis' => $episode_data->synopsis,
-                    'release_date' => $episode_data->releaseDate ? Carbon::createFromFormat('Y-m-d', $episode_data->releaseDate) : null,
-                ]);
+                    [
+                        'name' => [
+                            'ru' => $episode_data->nameRu,
+                            'en' => $episode_data->nameEn,
+                        ],
+                        'synopsis' => $episode_data->synopsis,
+                        'release_date' => $episode_data->releaseDate ? Carbon::createFromFormat('Y-m-d', $episode_data->releaseDate) : null,
+                    ]
+                );
             }
         }
     }

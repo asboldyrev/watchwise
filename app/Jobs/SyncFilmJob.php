@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Film as ModelsFilm;
 use App\Services\Kinopoisk\Film;
 use App\Services\KinopoiskApiUnofficial\Client;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -31,7 +32,7 @@ class SyncFilmJob implements ShouldQueue, ShouldBeUnique
      */
     public function handle(): void
     {
-        Film::syncFilm($this->filmData);
+        Film::sync($this->filmData);
     }
 
     public function uniqueId(): string

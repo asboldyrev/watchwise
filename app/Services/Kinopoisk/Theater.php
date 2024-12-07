@@ -11,13 +11,17 @@ class Theater
     public static function sync(int $filmId)
     {
         $film = Film::find($filmId);
-        $film->onlineTheaters()->detach();
 
         $client = new Client();
+        $theater_ids = [];
 
         $kp_film = $client->getFilm($filmId);
 
-        self::syncKinopoiskTheater($film, $kp_film->kinopoiskHDId);
+        $kp_theater = self::syncKinopoiskTheater($film, $kp_film->kinopoiskHDId);
+
+        if ($kp_theater) {
+            array_merge($theater_ids, $kp_theater);
+        }
 
         $online_theaters = $client->getOnlineTheaters($film->id);
 
@@ -30,18 +34,21 @@ class Theater
                     ->toMediaCollection('logo');
             }
 
-            $film
-                ->onlineTheaters()
-                ->attach(
-                    $theater->id,
-                    ['url' => $online_theater_data->url]
-                );
+            $theater_ids[$theater->id] = ['url' => $online_theater_data->url];
         }
+
+        $film
+            ->onlineTheaters()
+            ->sync($theater_ids);
     }
 
 
-    protected static function syncKinopoiskTheater(Film $film, string $kinopoiskHdId)
+    protected static function syncKinopoiskTheater(Film $film, string $kinopoiskHdId = null)
     {
+        if (!$kinopoiskHdId) {
+            return;
+        }
+
         /** @var OnlineTheater $kinopoisk_theater */
         $kinopoisk_theater = OnlineTheater::firstOrCreate(['name' => 'Кинопоиск']);
 
@@ -51,11 +58,10 @@ class Theater
                 ->toMediaCollection('logo');
         }
 
-        $film
-            ->onlineTheaters()
-            ->attach(
-                $kinopoisk_theater->id,
-                ['url' => 'https://hd.kinopoisk.ru/film/' . $kinopoiskHdId]
-            );
+        return [
+            $kinopoisk_theater->id => [
+                'url' => 'https://hd.kinopoisk.ru/film/' . $kinopoiskHdId
+            ],
+        ];
     }
 }

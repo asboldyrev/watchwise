@@ -11,7 +11,7 @@ use stdClass;
 
 class Film
 {
-    public static function syncFilm(stdClass $filmData): ModelsFilm
+    public static function sync(stdClass $filmData): ModelsFilm
     {
         $id = get_film_id($filmData);
 
@@ -104,36 +104,24 @@ class Film
 
     protected static function syncMedia(ModelsFilm $film, stdClass $filmData)
     {
-        // TODO доделать синхронизацию медиа через проверку url
+        $images = [
+            'poster' => $filmData->posterUrl,
+            'cover' => $filmData->coverUrl,
+            'logo' => $filmData->logoUrl,
+        ];
+
         try {
-            if (
-                $filmData->posterUrl &&
-                $film->media()->where('custom_properties', 'like', '%' . $filmData->posterUrl . '%')->count() == 0
-            ) {
-                $film
-                    ->addMediaFromUrl($filmData->posterUrl)
-                    ->withCustomProperties(['orig_url' => $filmData->posterUrl])
-                    ->toMediaCollection('poster');
-            }
+            foreach ($images as $collection => $url) {
+                if (!$url) {
+                    continue;
+                }
 
-            if (
-                $filmData->coverUrl &&
-                $film->media()->where('custom_properties', 'like', '%' . $filmData->coverUrl . '%')->count() == 0
-            ) {
-                $film
-                    ->addMediaFromUrl($filmData->coverUrl)
-                    ->withCustomProperties(['orig_url' => $filmData->coverUrl])
-                    ->toMediaCollection('cover');
-            }
-
-            if (
-                $filmData->logoUrl &&
-                $film->media()->where('custom_properties', 'like', '%' . $filmData->logoUrl . '%')->count() == 0
-            ) {
-                $film
-                    ->addMediaFromUrl($filmData->logoUrl)
-                    ->withCustomProperties(['orig_url' => $filmData->logoUrl])
-                    ->toMediaCollection('logo');
+                if ($film->media()->where('custom_properties', 'like', '%' . $url . '%')->count() == 0) {
+                    $film
+                        ->addMediaFromUrl($url)
+                        ->withCustomProperties(['orig_url' => $url])
+                        ->toMediaCollection($collection);
+                }
             }
         } catch (UnreachableUrl $exception) {
             //
