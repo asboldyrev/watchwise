@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\FilmImported;
+use App\Jobs\Middlewares\KinopoiskApiLimit;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -29,7 +30,12 @@ class SyncFilmDataJob implements ShouldQueue
         SyncSeasonsJob::dispatch($this->filmId);
         // SyncAwardsJob::dispatch($this->filmId);
         SyncRelatedFilmsJob::dispatch($this->filmId);
-        // new SyncPersonJob($film),
+        SyncPersonsJob::dispatch($this->filmId);
         FilmImported::dispatch($this->filmId);
+    }
+
+    public function middleware()
+    {
+        return [new KinopoiskApiLimit()];
     }
 }

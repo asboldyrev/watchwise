@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\Middlewares\KinopoiskApiLimit;
 use App\Services\Kinopoisk\Seasons;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -37,6 +38,7 @@ class SyncSeasonsJob implements ShouldQueue
     {
         return [
             new WithoutOverlapping($this->filmId),
+            new KinopoiskApiLimit(),
         ];
     }
 }

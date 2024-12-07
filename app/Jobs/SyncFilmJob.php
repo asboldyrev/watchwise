@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\Middlewares\KinopoiskApiLimit;
 use App\Models\Film as ModelsFilm;
 use App\Services\Kinopoisk\Film;
 use App\Services\KinopoiskApiUnofficial\Client;
@@ -44,6 +45,7 @@ class SyncFilmJob implements ShouldQueue, ShouldBeUnique
     {
         return [
             new WithoutOverlapping(get_film_id($this->filmData)),
+            new KinopoiskApiLimit(),
         ];
     }
 }
