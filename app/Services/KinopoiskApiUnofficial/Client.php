@@ -111,7 +111,7 @@ class Client
 
     protected static function request(string $url, array|null $query = null, string $method = 'get')
     {
-        usleep(50000);
+        usleep(100_000);
         $url = env('KINOPOISK_API_UNOFFICIAL_URL') . $url;
 
         $cache_key = $url . http_build_query($query ?? []);

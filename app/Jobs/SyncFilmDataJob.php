@@ -6,6 +6,7 @@ use App\Events\FilmImported;
 use App\Jobs\Middlewares\KinopoiskApiLimit;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Bus;
 
 class SyncFilmDataJob implements ShouldQueue
 {
@@ -17,7 +18,7 @@ class SyncFilmDataJob implements ShouldQueue
     public function __construct(
         public int $filmId
     ) {
-        //
+        $this->onQueue('import_film');
     }
 
     /**
@@ -25,13 +26,15 @@ class SyncFilmDataJob implements ShouldQueue
      */
     public function handle(): void
     {
-        SyncFilmJob::dispatch($this->filmId);
-        SyncTheatersJob::dispatch($this->filmId);
-        SyncSeasonsJob::dispatch($this->filmId);
-        // SyncAwardsJob::dispatch($this->filmId);
-        SyncRelatedFilmsJob::dispatch($this->filmId);
-        SyncPersonsJob::dispatch($this->filmId);
-        FilmImported::dispatch($this->filmId);
+        Bus::chain([
+            new SyncFilmJob($this->filmId),
+            new SyncTheatersJob($this->filmId),
+            new SyncSeasonsJob($this->filmId),
+        // new SyncAwardsJob($this->filmId),
+            new SyncRelatedFilmsJob($this->filmId),
+            new SyncPersonsJob($this->filmId),
+            new FilmImported($this->filmId),
+        ])->dispatch();
     }
 
     public function middleware()

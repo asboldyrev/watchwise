@@ -18,7 +18,7 @@ class SyncSeasonsJob implements ShouldQueue
     public function __construct(
         public int $filmId
     ) {
-        //
+        $this->onQueue('import_film');
     }
 
     /**

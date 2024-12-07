@@ -22,6 +22,8 @@ class SyncFilmJob implements ShouldQueue, ShouldBeUnique
     public function __construct(
         public stdClass|int $filmData,
     ) {
+        $this->onQueue('import_film');
+
         if (is_int($this->filmData)) {
             $client = new Client();
             $this->filmData = $client->getFilm($this->filmData);

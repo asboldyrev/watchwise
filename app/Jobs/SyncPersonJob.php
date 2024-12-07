@@ -18,7 +18,7 @@ class SyncPersonJob implements ShouldQueue
     public function __construct(
         public int $personId
     ) {
-        //
+        $this->onQueue('import_film');
     }
 
     /**
