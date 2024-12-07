@@ -17,7 +17,7 @@ Schedule
         [
             // '--stop-when-empty',
             '--tries' => 3,
-            '--max-time' => 300,
+            '--max-time' => 50,
         ]
     )
     ->skip(fn() => DB::table('jobs')->count() == 0)
