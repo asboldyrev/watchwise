@@ -137,12 +137,20 @@
             </div>
         </div>
     </div>
+
+    <div class="row mt-4">
+        <div class="col-sm-3" v-for="related_film in film.related_films">
+            <FilmCard :film="related_film" :related="related_film.pivot.type" />
+        </div>
+    </div>
 </template>
 
 <script setup>
+    import FilmCard from '@app/components/FilmCard.vue'
+
     import { useRoute } from 'vue-router'
     import { filmShow } from '@app/api/films'
-    import { computed, ref } from 'vue'
+    import { computed, ref, watch } from 'vue'
     import dayjs from '@app/bootstrap/dayjs'
 
     import AgeLimit from '../components/AgeLimit.vue'
@@ -189,6 +197,13 @@
         }
 
         return film.value.name?.en ? film.value.name.en : film.value.name?.original
+    })
+
+    watch(route, () => {
+        if (route.params.film != filmId.value) {
+            filmId.value = route.params.film
+            loadFilm()
+        }
     })
 </script>
 

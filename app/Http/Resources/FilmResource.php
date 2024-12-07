@@ -41,6 +41,8 @@ class FilmResource extends JsonResource
             'genres' => GenreResource::collection($this->whenLoaded('genres')),
             'theaters' => TheaterResource::collection($this->whenLoaded('onlineTheaters')),
             'seasons' => SeasonResource::collection($this->whenLoaded('seasons')),
+            'related_films' => self::collection($this->whenLoaded('relatedFilms')),
+            'pivot' => $this?->pivot,
         ];
     }
 }

@@ -28,7 +28,7 @@ class SyncFilmDataJob implements ShouldQueue
         SyncTheatersJob::dispatch($this->filmId);
         SyncSeasonsJob::dispatch($this->filmId);
         // SyncAwardsJob::dispatch($this->filmId);
-        // new SyncRelatedFilmsJob($film),
+        SyncRelatedFilmsJob::dispatch($this->filmId);
         // new SyncPersonJob($film),
         FilmImported::dispatch($this->filmId);
     }

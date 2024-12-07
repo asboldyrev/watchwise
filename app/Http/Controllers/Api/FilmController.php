@@ -34,7 +34,7 @@ class FilmController extends Controller
                 'media',
             ])
             ->orderBy('year', 'desc')
-            ->paginate();
+            ->paginate(16);
 
         return ResourcesFilmResource::collection($films);
     }
@@ -49,6 +49,11 @@ class FilmController extends Controller
                 'media',
                 'onlineTheaters' => fn($query) => $query->with('media'),
                 'seasons' => fn($query) => $query->with('episodes'),
+                'relatedFilms' => fn($query) => $query->orderByRaw('year IS NULL')->orderBy('year')->with([
+                    'countries',
+                    'genres',
+                    'media',
+                ]),
             ])
             ->first();
 
