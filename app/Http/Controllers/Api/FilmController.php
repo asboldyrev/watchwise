@@ -6,6 +6,7 @@ use App\Events\FilmImported;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FilmResource as ResourcesFilmResource;
 use App\Http\Resources\KinopoiskUnofficial\FilmResource;
+use App\Jobs\SyncFilmDataJob;
 use App\Jobs\SyncFilmJob;
 use App\Jobs\SyncSeasonsJob;
 use App\Jobs\SyncTheatersJob;
@@ -52,14 +53,7 @@ class FilmController extends Controller
             ->first();
 
         if (!$film) {
-            SyncFilmJob::dispatch($filmId);
-            SyncTheatersJob::dispatch($filmId);
-            SyncSeasonsJob::dispatch($filmId);
-            // SyncAwardsJob::dispatch($filmId);
-            // new SyncRelatedFilmsJob($film),
-            // new SyncPersonJob($film),
-            FilmImported::dispatch($filmId);
-
+            SyncFilmDataJob::dispatch($filmId);
 
             return response()->json(['importing' => true]);
         }
