@@ -75,6 +75,11 @@ class Film extends Model implements HasMedia
         return $this->belongsToMany(Film::class, 'related_films', 'film_id', 'related_film_id')->using(RelatedFilm::class)->withPivot('type');
     }
 
+    public function persons(): BelongsToMany
+    {
+        return $this->belongsToMany(Person::class)->using(FilmPerson::class)->withPivot(['description', 'profession_text', 'profession_key']);
+    }
+
     public function registerMediaCollections(): void
     {
         $this

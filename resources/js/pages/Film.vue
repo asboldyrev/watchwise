@@ -24,16 +24,12 @@
                 </li>
 
                 <!-- <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#siquels-and-priquels" type="button" role="tab">Сиквелы и приквелы</button>
-                </li> -->
-
-                <!-- <li class="nav-item" role="presentation">
                     <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#awards" type="button" role="tab">Награды</button>
                 </li> -->
 
-                <!-- <li class="nav-item" role="presentation">
-					<button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#staff" type="button" role="tab">Состав</button>
-				</li> -->
+                <li class="nav-item" role="presentation">
+                    <button v-if="film.professions?.length" class="nav-link" :class="{ 'active': currentTab == 'staff' }" @click="currentTab = 'staff'; currentProfession = 'WRITER'" type="button" role="tab">Состав</button>
+                </li>
 
                 <li class="nav-item" role="presentation" v-if="film.seasons && film.seasons.length">
                     <button class="nav-link" :class="{ 'active': currentTab == 'seasons' }" @click="currentTab = 'seasons'" type="button" role="tab">Сезоны</button>
@@ -134,6 +130,32 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="tab-pane fade" :class="{ 'show active': currentTab == 'staff' }">
+                    <ul class="nav nav-tabs mt-4" role="tablist">
+                        <li v-for="(staff, profession) in film.professions" class="nav-item">
+                            <button class="nav-link" :class="{ 'active': currentProfession == profession }" @click="currentProfession = profession" type="button" role="tab">{{ professionName(profession) }}</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content mt-3" id="myTabContent">
+                        <div v-for="(staff, profession) in film.professions" class="tab-pane fade" :class="{ 'show active': currentProfession == profession }">
+                            <div class="row">
+                                <div v-for="person in film.persons.filter(person => staff.includes(person.id))" class="col-sm-2 my-2">
+                                    <div class="card">
+                                        <img v-if="person.images?.poster?.[0]?.urls?.origin" class="card-img-top img-fluid" :src="person.images?.poster?.[0]?.urls?.origin" :alt="person.name.ru ? person.name.ru : $person.name.en">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ person.name.ru ? person.name.ru : $person.name.en }}</h5>
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <!-- <li class="list-group-item">{{ person.pivot.profession_text }}</li> -->
+                                            <li v-if="person?.pivot?.description" class="list-group-item">{{ person.pivot.description }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -159,6 +181,7 @@
     const filmId = ref(route.params?.film)
     const film = ref({})
     const currentTab = ref('main')
+    const currentProfession = ref('WRITER')
     const loaded = ref(false)
 
     filmShow(filmId.value).then(response => {
@@ -189,6 +212,23 @@
         }
 
         return votes
+    }
+
+    function professionName(profession) {
+        switch (profession) {
+            case 'WRITER': return 'Сценарист'
+            case 'OPERATOR': return 'Оператор'
+            case 'EDITOR': return 'Монтажёр'
+            case 'COMPOSER': return 'Композитор'
+            case 'PRODUCER_USSR': return 'Продюсер (в СССР)'
+            case 'TRANSLATOR': return 'Переводчик'
+            case 'DIRECTOR': return 'Режиссёр'
+            case 'DESIGN': return 'Художник-постановщик'
+            case 'PRODUCER': return 'Продюсер'
+            case 'ACTOR': return 'Актёр'
+            case 'VOICE_DIRECTOR': return 'Режиссёр дубляжа'
+            case 'UNKNOWN': return 'Неизвестно'
+        }
     }
 
     const name = computed(() => {

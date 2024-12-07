@@ -4,10 +4,14 @@ namespace App\Services\KinopoiskApiUnofficial;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client as GuzzleHttpClient;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class Client
 {
+    protected static $maxTry = 3;
+
     public function searchFilm(string $query, int $page = 1)
     {
         return $this->request('v2.1/films/search-by-keyword', [
@@ -107,6 +111,7 @@ class Client
 
     protected static function request(string $url, array|null $query = null, string $method = 'get')
     {
+        usleep(50000);
         $url = env('KINOPOISK_API_UNOFFICIAL_URL') . $url;
 
         $cache_key = $url . http_build_query($query ?? []);
@@ -123,10 +128,25 @@ class Client
         $config = compact('headers', 'query');
         $client = new GuzzleHttpClient($config);
 
-        $response = $client
-            ->request($method, $url, $config)
-            ->getBody()
-            ->getContents();
+
+        $try = 1;
+        while ($try <= self::$maxTry) {
+            try {
+                $response = $client
+                    ->request($method, $url, $config)
+                    ->getBody()
+                    ->getContents();
+                break;
+            } catch (ClientException $exception) {
+                if ($exception->getCode() == 404) {
+                    $try++;
+                    sleep(1);
+                } else {
+                    Log::debug($exception);
+                    throw $exception;
+                }
+            }
+        }
 
         Cache::put($cache_key, json_decode($response), 7 * 24 * 60);
 

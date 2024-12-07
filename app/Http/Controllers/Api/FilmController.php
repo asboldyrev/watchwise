@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Events\FilmImported;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FilmResource as ResourcesFilmResource;
 use App\Http\Resources\KinopoiskUnofficial\FilmResource;
 use App\Jobs\SyncFilmDataJob;
-use App\Jobs\SyncFilmJob;
-use App\Jobs\SyncSeasonsJob;
-use App\Jobs\SyncTheatersJob;
 use App\Models\Film;
 use App\Services\KinopoiskApiUnofficial\Client;
 use Illuminate\Http\Request;
@@ -41,6 +37,7 @@ class FilmController extends Controller
 
     public function show(int $filmId)
     {
+        /** @var Film $film */
         $film = Film
             ::where('id', $filmId)
             ->with([
@@ -54,8 +51,20 @@ class FilmController extends Controller
                     'genres',
                     'media',
                 ]),
+                'persons' => fn($query) => $query->orderByProfession()->with('media'),
             ])
             ->first();
+
+        $professions = [];
+        foreach ($film->persons as $person) {
+            $name = $person?->pivot?->profession_key?->name;
+
+            if ($name) {
+                $professions[$name][] = $person->id;
+            }
+        }
+
+        $film->setRelation('professions', $professions);
 
         if (!$film) {
             SyncFilmDataJob::dispatch($filmId);
