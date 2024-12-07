@@ -1,5 +1,6 @@
 <template>
     <router-link :to="{ name: 'films.show', params: { film: film.id } }" class="card mb-3">
+        <AgeLimit :film="film" small />
         <div class="row g-0">
             <div class="col-md-4">
                 <img loading="lazy" :src="film.images.poster?.[0]?.urls?.card" class="img-fluid rounded-start" alt="">
@@ -9,6 +10,8 @@
                     <h5 class="card-title">{{ name }} <span class="text-secondary">{{ film.year }}</span></h5>
                     <p class="card-text description">{{ film.description }}</p>
                     <p class="card-text"><small class="text-body-secondary">{{ genres }}</small></p>
+                    <span class="badge text-bg-light" v-if="related">{{ relatedFilm }}</span>
+                    <CountryFlag v-for="country in film.countries" :country="country" />
                 </div>
             </div>
         </div>
@@ -22,6 +25,11 @@
         film: {
             type: Object,
             required: true
+        },
+        related: {
+            type: Array,
+            required: false,
+            default: () => undefined
         }
     })
 
@@ -35,6 +43,21 @@
 
     const genres = computed(() => {
         return props.film.genres.map(genre => genre.name).join(', ')
+    })
+
+    const relatedFilm = computed(() => {
+        const relation = {
+            SEQUEL: 'сиквел',
+            PREQUEL: 'приквел',
+            REMAKE: 'ремейк',
+            UNKNOWN: 'Неизвестно',
+        }
+
+        if (props.related) {
+            return relation?.[props.related]
+        }
+
+        return undefined
     })
 
 </script>
