@@ -11,7 +11,9 @@
                     <p class="card-text description">{{ film.description }}</p>
                     <p class="card-text"><small class="text-body-secondary">{{ genres }}</small></p>
                     <span class="badge text-bg-light" v-if="related">{{ relatedFilm }}</span>
-                    <CountryFlag v-for="country in film.countries" :country="country" />
+                    <div>
+                        <CountryFlag v-for="country in film.countries" :country="country" />
+                    </div>
                 </div>
             </div>
         </div>
