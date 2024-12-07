@@ -8,7 +8,7 @@ use App\Services\KinopoiskApiUnofficial\Client;
 
 class Theater
 {
-    public static function syncOnlineTheaters(int $filmId)
+    public static function sync(int $filmId)
     {
         $film = Film::find($filmId);
         $film->onlineTheaters()->detach();

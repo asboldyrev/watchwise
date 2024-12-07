@@ -2,12 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Services\Kinopoisk\Theater;
+use App\Services\Kinopoisk\Seasons;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 
-class SyncTheatersJob implements ShouldQueue
+class SyncSeasonsJob implements ShouldQueue
 {
     use Queueable;
 
@@ -25,7 +25,7 @@ class SyncTheatersJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Theater::sync($this->filmId);
+        Seasons::sync($this->filmId);
     }
 
     public function uniqueId(): string

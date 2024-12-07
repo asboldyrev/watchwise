@@ -17,7 +17,7 @@
         <div class="col-sm-8">
             <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" :class="{ 'active': currentTab == 'main' }" type="button" role="tab">Основное</button>
+                    <button class="nav-link" :class="{ 'active': currentTab == 'main' }" @click="currentTab = 'main'" type="button" role="tab">Основное</button>
                 </li>
 
                 <!-- <li class="nav-item" role="presentation">
@@ -32,13 +32,13 @@
 					<button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#staff" type="button" role="tab">Состав</button>
 				</li> -->
 
-                <!-- <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#seasons" type="button" role="tab">Сезоны</button>
-                </li> -->
+                <li class="nav-item" role="presentation" v-if="film.seasons && film.seasons.length">
+                    <button class="nav-link" :class="{ 'active': currentTab == 'seasons' }" @click="currentTab = 'seasons'" type="button" role="tab">Сезоны</button>
+                </li>
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                <div class="tab-pane fade" :class="{ 'show active': currentTab == 'main' }">
                     <div class="mt-4">
                         <!-- @if ($film.getSing())
 							<p><small class="border-secondary rounded-1 text-secondary border px-2 py-1">{{ $film.getSing() }}</small></p>
@@ -51,17 +51,17 @@
                         <p>{{ film.description }}</p>
                     </div>
 
-                    <!-- <div class="mt-4">
-						@if ($film.imdb_id)
+                    <div class="mt-4">
+                        <!-- @if ($film.imdb_id)
 							<a class="me-3" href="{{ 'https://www.imdb.com/title/' . $film.imdb_id }}" target="_blank">IMDB</a>
-						@endif
+						@endif -->
 
-						@if ($film.serial)
-							<a href="{{ 'https://www.kinopoisk.ru/series/' . $film.id }}" target="_blank">Кинопоиск</a>
-						@else
-							<a href="{{ 'https://www.kinopoisk.ru/film/840725' . $film.id }}" target="_blank">Кинопоиск</a>
-						@endif
-					</div> -->
+                        <!-- @if ($film.serial) -->
+                        <!-- <a href="{{ 'https://www.kinopoisk.ru/series/' . $film.id }}" target="_blank">Кинопоиск</a> -->
+                        <!-- @else -->
+                        <!-- <a href="{{ 'https://www.kinopoisk.ru/film/840725' . $film.id }}" target="_blank">Кинопоиск</a> -->
+                        <!-- @endif -->
+                    </div>
 
                     <div class="mt-4">
                         <div>
@@ -106,6 +106,38 @@
                         </div>
                     </div>
                 </div>
+                <div class="tab-pane fade" :class="{ 'show active': currentTab == 'seasons' }">
+                    <table class="table-hover table-striped mb-0 table">
+                        <thead>
+                            <tr>
+                                <!-- <th>Сезон</th> -->
+                                <th>Серия</th>
+                                <th>Название</th>
+                                <th>Релиз</th>
+                                <th>Синопсис</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="season in film.seasons">
+                                <tr>
+                                    <th colspan="4">Сезон {{ season.number }}</th>
+                                </tr>
+                                <tr v-for="episode in season.episodes">
+                                    <!-- <td>{{ season.number }}</td> -->
+                                    <td>{{ episode.episode_number }}</td>
+                                    <td>{{ episode.name.ru ? episode.name.ru : episode.name.en }}</td>
+                                    <td class="text-end">{{ dayjs(episode.release_date).format('DD MMMM YYYY') }}</td>
+                                    <td>{{ episode.synopsis }}</td>
+                                </tr>
+                            </template>
+                            <!-- @foreach ($film->seasons()->orderBy('number')->get() as $season)
+                            @foreach ($season->episodes()->orderBy('episode_number')->get() as $episode)
+
+                            @endforeach
+                            @endforeach -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -115,6 +147,7 @@
     import { useRoute } from 'vue-router'
     import { filmShow } from '@app/api/films'
     import { computed, ref } from 'vue'
+    import dayjs from '@app/bootstrap/dayjs'
 
     import AgeLimit from '../components/AgeLimit.vue'
 

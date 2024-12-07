@@ -40,6 +40,7 @@ class FilmResource extends JsonResource
             'countries' => CountryResource::collection($this->whenLoaded('countries')),
             'genres' => GenreResource::collection($this->whenLoaded('genres')),
             'theaters' => TheaterResource::collection($this->whenLoaded('onlineTheaters')),
+            'seasons' => SeasonResource::collection($this->whenLoaded('seasons')),
         ];
     }
 }
