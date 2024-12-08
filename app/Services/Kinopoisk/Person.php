@@ -101,11 +101,13 @@ class Person
             }
         }
 
-        foreach ($person_data->films as $film_data) {
-            $film = Film::find($film_data->filmId);
+        if (config('import.person_extend')) {
+            foreach ($person_data->films as $film_data) {
+                $film = Film::find($film_data->filmId);
 
-            if (!$film) {
-                SyncFilmDataJob::dispatch($film_data->filmId);
+                if (!$film) {
+                    SyncFilmDataJob::dispatch($film_data->filmId);
+                }
             }
         }
     }
