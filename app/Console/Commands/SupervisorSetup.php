@@ -36,6 +36,7 @@ class SupervisorSetup extends Command
         $files = [
             'queue.conf' => $configDirectory . '/queue.conf',
             'reverb.conf' => $configDirectory . '/reverb.conf',
+            'pulse.conf' => $configDirectory . '/pulse.conf',
         ];
 
         // Создание символических ссылок
