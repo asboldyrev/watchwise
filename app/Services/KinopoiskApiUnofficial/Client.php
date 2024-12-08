@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class Client
 {
-    protected static $maxTry = 3;
+    protected static $maxRetryCount = 3;
 
     public function searchFilm(string $query, int $page = 1)
     {
@@ -76,80 +76,141 @@ class Client
             return true;
         }
 
-        sleep(1);
-        $url = env('KINOPOISK_API_UNOFFICIAL_URL') . 'v1/api_keys/' . env('KINOPOISK_API_UNOFFICIAL_TOKEN');
-
-        $headers = [
-            'X-API-KEY' => env('KINOPOISK_API_UNOFFICIAL_TOKEN'),
-            'Content-Type' => 'application/json',
-        ];
-
-        $config = compact('headers');
-        $client = new GuzzleHttpClient($config);
-
-        $response = $client
-            ->request('get', $url, $config)
-            ->getBody()
-            ->getContents();
-
-        $response = json_decode($response);
-
-        if ($response->totalQuota->value >= 0 && $response->totalQuota->used >= $response->totalQuota->value) {
+        if (Cache::get('kinopoisk_unofficial_daily_limit_check')) {
             return true;
         }
 
-        $daily_limit = $response->dailyQuota->value >= 0 && $response->dailyQuota->used >= $response->dailyQuota->value;
+        $url = 'v1/api_keys/' . env('KINOPOISK_API_UNOFFICIAL_TOKEN');
+        $response = self::request($url);
 
-        if ($daily_limit) {
-            Cache::put('kinopoisk_unofficial_daily_limit', true, Carbon::now()->endOfDay()->diffInMinutes());
+        $this->setCacheLimitCheck($response);
 
-            return true;
-        }
-
-        return false;
+        return $this->checkDailyLimit($response);
     }
 
-    protected static function request(string $url, array|null $query = null, string $method = 'get')
+    protected static function request(string $url, array|null $params = null, string $method = 'get')
     {
-        usleep(100_000);
         $url = env('KINOPOISK_API_UNOFFICIAL_URL') . $url;
+        $cache_key = self::generateCacheKey($url, $params);
 
-        $cache_key = $url . http_build_query($query ?? []);
+        // Проверка кеша
+        if ($cachedResponse = self::getFromCache($cache_key)) {
+            return $cachedResponse;
+        }
 
+        $lock = self::getApiLock();
+        $response = self::makeApiRequest($method, $url, $params, $lock);
+
+        // Сохранение в кеш
+        self::saveToCache($cache_key, $response);
+
+        return $response;
+    }
+
+    protected static function generateCacheKey(string $url, array|null $params): string
+    {
+        return $url . http_build_query($params ?? []);
+    }
+
+    protected static function getFromCache(string $cache_key)
+    {
         if (Cache::has($cache_key)) {
             Cache::put($cache_key, Cache::get($cache_key), 7 * 24 * 60);
             return Cache::get($cache_key);
         }
 
+        return null;
+    }
+
+    protected static function getApiLock()
+    {
+        return Cache::lock('api_request_lock', 10);
+    }
+
+    protected static function makeApiRequest(string $method, string $url, array|null $params, $lock)
+    {
+        $retry_count = 1;
+        $client = self::getHttpClient($params);
+
+        while ($retry_count <= self::$maxRetryCount) {
+            if (!$lock->get()) {
+                sleep(1);
+                continue;
+            }
+
+            try {
+                usleep(60_000);
+                $response = $client
+                    ->request($method, $url, ['query' => $params])
+                    ->getBody()
+                    ->getContents();
+
+                return json_decode($response);
+            } catch (ClientException $exception) {
+                if ($exception->getCode() == 429) {
+                    $retry_count++;
+                    Log::warning('Rate limit reached. Retrying...');
+                    sleep(1);
+                } elseif ($exception->getCode() == 404) {
+                    return json_decode('[]');
+                } else {
+                    Log::error('API request failed', ['exception' => $exception]);
+                    throw $exception;
+                }
+            } finally {
+                $lock->release();
+            }
+        }
+
+        // Если попытки закончились, вернем пустой ответ
+        return json_decode('[]');
+    }
+
+    protected static function getHttpClient(array|null $params): GuzzleHttpClient
+    {
         $headers = [
             'X-API-KEY' => env('KINOPOISK_API_UNOFFICIAL_TOKEN'),
         ];
 
-        $config = compact('headers', 'query');
-        $client = new GuzzleHttpClient($config);
+        return new GuzzleHttpClient(compact('headers', 'params'));
+    }
 
+    protected static function saveToCache(string $cache_key, $response)
+    {
+        Cache::put($cache_key, $response, 7 * 24 * 60);
+    }
 
-        $try = 1;
-        while ($try <= self::$maxTry) {
-            try {
-                $response = $client
-                    ->request($method, $url, $config)
-                    ->getBody()
-                    ->getContents();
-                break;
-            } catch (ClientException $exception) {
-                if ($exception->getCode() == 404) {
-                    $try++;
-                    sleep(1);
-                } else {
-                    Log::debug($exception);
-                    throw $exception;
-                }
-            }
+    protected function setCacheLimitCheck($response)
+    {
+        // Рассчитываем проценты оставшихся запросов
+        $totalQuota = $response?->dailyQuota?->value ?: 1;
+        $usedQuota = $response?->dailyQuota?->used ?: 1;
+        $remainingQuota = $totalQuota - $usedQuota;
+
+        // Определяем процент оставшихся запросов
+        $remainingPercentage = $remainingQuota / $totalQuota;
+
+        // Рассчитываем время жизни кеша в зависимости от оставшихся запросов
+        $cacheDuration = match (true) {
+            $remainingPercentage >= 0.9 => 10, // 90% и более - 10 минут
+            $remainingPercentage >= 0.5 => 5,  // 50% и более - 5 минут
+            $remainingPercentage >= 0.1 => 2,  // 10% и более - 2 минуты
+            $remainingPercentage >= 0.01 => 0, // 1% и более - кеш отключен
+            default => 0, // Меньше 1% - кеш отключен
+        };
+
+        Cache::put('kinopoisk_unofficial_daily_limit_check', false, $cacheDuration);
+    }
+
+    protected function checkDailyLimit($response)
+    {
+        $has_daily_limit = $response?->dailyQuota?->value >= 0 && $response?->dailyQuota?->used >= $response?->dailyQuota?->value;
+
+        if ($response && $has_daily_limit) {
+            Cache::put('kinopoisk_unofficial_daily_limit', true, Carbon::now()->endOfDay()->diffInMinutes());
+            return true;
         }
 
-        Cache::put($cache_key, json_decode($response), 7 * 24 * 60);
-
-        return json_decode($response);
+        return false;
     }
 }
