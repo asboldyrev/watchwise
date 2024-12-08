@@ -11,7 +11,7 @@ class KinopoiskApiLimit
         $client = new Client();
 
         if ($client->hasLimitReached()) {
-            $job->release(12 * 60 * 60); // Попробовать через минуту
+            $job->release(12 * 60 * 60); // Попробовать через 12 часов
             return;
         }
 
