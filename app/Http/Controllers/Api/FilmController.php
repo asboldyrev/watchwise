@@ -55,6 +55,12 @@ class FilmController extends Controller
             ])
             ->first();
 
+        if (!$film) {
+            SyncFilmDataJob::dispatch($filmId);
+
+            return response()->json(['importing' => true]);
+        }
+
         $professions = [];
         foreach ($film->persons as $person) {
             $name = $person?->pivot?->profession_key?->name;
@@ -65,12 +71,6 @@ class FilmController extends Controller
         }
 
         $film->setRelation('professions', $professions);
-
-        if (!$film) {
-            SyncFilmDataJob::dispatch($filmId);
-
-            return response()->json(['importing' => true]);
-        }
 
         return ResourcesFilmResource::make($film);
     }
