@@ -43,7 +43,7 @@ class SupervisorSetup extends Command
             $targetPath = $supervisorConfigDir . '/' . $configFile;
 
             if (File::exists($targetPath)) {
-                $this->info("Symbolic link for {$configFile} already exists.");
+                $this->comment("Symbolic link for {$configFile} already exists.");
             } else {
                 exec('sudo ln -s ' . $sourcePath . ' ' . $targetPath);
                 $this->info("Created symbolic link for {$configFile}.");
