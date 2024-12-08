@@ -30,11 +30,11 @@ class SyncFilmDataJob implements ShouldQueue
             new SyncFilmJob($this->filmId),
             new SyncTheatersJob($this->filmId),
             new SyncSeasonsJob($this->filmId),
-        // new SyncAwardsJob($this->filmId),
+            // new SyncAwardsJob($this->filmId),
             new SyncRelatedFilmsJob($this->filmId),
             new SyncPersonsJob($this->filmId),
-            new FilmImported($this->filmId),
-        ])->dispatch();
+            new FilmImportedEventJob($this->filmId),
+        ])->onQueue('import_film')->dispatch();
     }
 
     public function middleware()
