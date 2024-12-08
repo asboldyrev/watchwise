@@ -27,8 +27,8 @@
                     <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#awards" type="button" role="tab">Награды</button>
                 </li> -->
 
-                <li class="nav-item" role="presentation">
-                    <button v-if="film.professions?.length" class="nav-link" :class="{ 'active': currentTab == 'staff' }" @click="currentTab = 'staff'; currentProfession = 'WRITER'" type="button" role="tab">Состав</button>
+                <li class="nav-item" role="presentation" v-if="film.persons.length">
+                    <button class="nav-link" :class="{ 'active': currentTab == 'staff' }" @click="currentTab = 'staff'; currentProfession = 'WRITER'" type="button" role="tab">Состав</button>
                 </li>
 
                 <li class="nav-item" role="presentation" v-if="film.seasons && film.seasons.length">
