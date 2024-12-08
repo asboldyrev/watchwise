@@ -147,15 +147,23 @@ class Client
 
                 return json_decode($response);
             } catch (ClientException $exception) {
-                if ($exception->getCode() == 429) {
-                    $retry_count++;
-                    Log::warning('Rate limit reached. Retrying...');
-                    sleep(1);
-                } elseif ($exception->getCode() == 404) {
-                    return json_decode('[]');
-                } else {
-                    Log::error('API request failed', ['exception' => $exception]);
-                    throw $exception;
+                switch ($exception->getCode()) {
+                    case 429:
+                        $retry_count++;
+                        Log::warning('Rate limit reached. Retrying...');
+                        sleep(1);
+                        break;
+
+                    case 404:
+                        return json_decode('[]');
+
+                    case 402:
+                        self::setCacheLimit();
+                        $lock->release();
+
+                    default:
+                        Log::error('API request failed', ['exception' => $exception]);
+                        throw $exception;
                 }
             } finally {
                 $lock->release();
@@ -178,6 +186,11 @@ class Client
     protected static function saveToCache(string $cache_key, $response)
     {
         Cache::put($cache_key, $response, 7 * 24 * 60);
+    }
+
+    protected static function setCacheLimit()
+    {
+        Cache::put('kinopoisk_unofficial_daily_limit', true, Carbon::now()->endOfDay()->diffInMinutes());
     }
 
     protected function setCacheLimitCheck($response)
@@ -207,7 +220,7 @@ class Client
         $has_daily_limit = $response?->dailyQuota?->value >= 0 && $response?->dailyQuota?->used >= $response?->dailyQuota?->value;
 
         if ($response && $has_daily_limit) {
-            Cache::put('kinopoisk_unofficial_daily_limit', true, Carbon::now()->endOfDay()->diffInMinutes());
+            self::setCacheLimit();
             return true;
         }
 
