@@ -141,16 +141,7 @@
                         <div v-for="(staff, profession) in film.professions" class="tab-pane fade" :class="{ 'show active': currentProfession == profession }">
                             <div class="row">
                                 <div v-for="person in film.persons.filter(person => staff.includes(person.id))" class="col-sm-2 my-2">
-                                    <div class="card">
-                                        <img v-if="person.images?.poster?.[0]?.urls?.origin" class="card-img-top img-fluid" :src="person.images?.poster?.[0]?.urls?.origin" :alt="person.name.ru ? person.name.ru : $person.name.en">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ person.name.ru ? person.name.ru : $person.name.en }}</h5>
-                                        </div>
-                                        <ul class="list-group list-group-flush">
-                                            <!-- <li class="list-group-item">{{ person.pivot.profession_text }}</li> -->
-                                            <li v-if="person?.pivot?.description" class="list-group-item">{{ person.pivot.description }}</li>
-                                        </ul>
-                                    </div>
+                                    <PersonCard :person="person" />
                                 </div>
                             </div>
                         </div>
@@ -169,6 +160,7 @@
 
 <script setup>
     import FilmCard from '@app/components/FilmCard.vue'
+    import PersonCard from '@app/components/PersonCard.vue'
 
     import { useRoute } from 'vue-router'
     import { filmShow } from '@app/api/films'

@@ -1,5 +1,6 @@
 import Search from "@app/pages/Search.vue"
 import Film from "@app/pages/Film.vue"
+import Person from "@app/pages/Person.vue"
 import MainPage from "@app/pages/MainPage.vue"
 
 export default [
@@ -20,6 +21,11 @@ export default [
                 path: 'films/:film',
                 name: 'films.show',
                 component: Film,
+            },
+            {
+                path: 'persons/:person',
+                name: 'persons.show',
+                component: Person,
             },
         ],
     },
