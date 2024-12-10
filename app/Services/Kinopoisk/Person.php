@@ -51,8 +51,7 @@ class Person
 
     public static function sync(int $personId)
     {
-        $person_replace = [
-            // 'unofficial' => 'official'
+        $personId = match ($personId) {
             5492279 => 3683141,
             6326676 => 4453931,
             7169658 => 10131931,
@@ -61,11 +60,8 @@ class Person
             4965940 => 2345082,
             6808437 => 6793776,
             6837814 => 1141993,
-        ];
-
-        if (key_exists($personId, $person_replace)) {
-            $personId = $person_replace[$personId];
-        }
+            default => $personId
+        };
 
         $client = new Client();
         $person_data = $client->getPerson($personId);
