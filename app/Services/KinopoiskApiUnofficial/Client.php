@@ -94,7 +94,7 @@ class Client
         $cache_key = self::generateCacheKey($url, $params);
 
         // Проверка кеша
-        if ($cachedResponse = self::getFromCache($cache_key)) {
+        if (mb_stripos($url, 'api_keys') === false && $cachedResponse = self::getFromCache($cache_key)) {
             return $cachedResponse;
         }
 
@@ -102,7 +102,9 @@ class Client
         $response = self::makeApiRequest($method, $url, $params, $lock);
 
         // Сохранение в кеш
-        self::saveToCache($cache_key, $response);
+        if (mb_stripos($url, 'api_keys') === false) {
+            self::saveToCache($cache_key, $response);
+        }
 
         return $response;
     }
