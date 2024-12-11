@@ -31,7 +31,8 @@ class PersonResource extends JsonResource
             'profession' => $this->profession,
             'facts' => $this->facts,
             'images' => $this->getImages(),
-            'films' => FilmResource::collection($this->whenLoaded('films'))
+            'films' => FilmResource::collection($this->whenLoaded('films')),
+            'pivot' => $this?->pivot,
         ];
     }
 }
