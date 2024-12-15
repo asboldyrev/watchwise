@@ -23,7 +23,7 @@
                     <button class="nav-link" :class="{ 'active': currentTab == 'main' }" @click="currentTab = 'main'" type="button" role="tab">Основное</button>
                 </li>
 
-                <li class="nav-item" role="presentation">
+                <li class="nav-item" role="presentation" v-if="film?.awards?.length">
                     <button class="nav-link" :class="{ 'active': currentTab == 'awards' }" @click="currentTab = 'awards'" type="button" role="tab">Награды</button>
                 </li>
 
@@ -115,7 +115,8 @@
                                 <template v-for="award in film.awards">
                                     <tr v-for="nomination in award.nominations">
                                         <td>
-                                            <img :class="{ 'not-win': !nomination.is_win }" height="50" :src="award?.images?.image?.[0]?.urls?.origin">
+                                            <img v-if="award?.images?.image?.[0]?.urls?.origin" :class="{ 'not-win': !nomination.is_win }" height="50" :src="award?.images?.image?.[0]?.urls?.origin">
+                                            <div v-else class="award-badge rounded-circle" :class="{ 'bg-warning': nomination.is_win, 'bg-secondary': !nomination.is_win }"></div>
                                         </td>
                                         <td>{{ award.name }}</td>
                                         <td>{{ nomination.year }}</td>
@@ -125,13 +126,16 @@
                                                 <router-link :to="{ name: 'persons.show', params: { person: person.id } }" class="text-secondary small me-2">{{ person.name.ru }}</router-link>
                                             </template>
                                         </td>
-                                        <td>{{ nomination.is_win ? 'Да' : 'Нет' }}</td>
+                                        <td class="position-relative">
+                                            {{ nomination.is_win ? 'Да' : 'Нет' }}
+                                        </td>
                                     </tr>
                                 </template>
                             </tbody>
                         </table>
                     </div>
                 </div>
+
                 <div class="tab-pane fade" :class="{ 'show active': currentTab == 'seasons' }">
                     <table class="table-hover table-striped mb-0 table">
                         <thead>
@@ -164,6 +168,7 @@
                         </tbody>
                     </table>
                 </div>
+
                 <div class="tab-pane fade" :class="{ 'show active': currentTab == 'staff' }">
                     <ul class="nav nav-tabs mt-4" role="tablist">
                         <li v-for="(staff, profession) in film.professions" class="nav-item">
@@ -280,5 +285,11 @@
 
     .not-win {
         filter: grayscale(100%);
+    }
+
+    .award-badge {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
     }
 </style>
