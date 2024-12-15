@@ -65,15 +65,20 @@ class Person extends Model implements HasMedia
         return $query->orderByRaw("CASE pivot_profession_key {$caseSql} END");
     }
 
+    public function films(): BelongsToMany
+    {
+        return $this->belongsToMany(Film::class)->using(FilmPerson::class)->withPivot(['description', 'profession_text', 'profession_key']);
+    }
+
+    public function nominations(): BelongsToMany
+    {
+        return $this->belongsToMany(Nomination::class);
+    }
+
     public function registerMediaCollections(): void
     {
         $this
             ->addMediaCollection('poster')
             ->singleFile();
-    }
-
-    public function films(): BelongsToMany
-    {
-        return $this->belongsToMany(Film::class)->using(FilmPerson::class)->withPivot(['description', 'profession_text', 'profession_key']);
     }
 }

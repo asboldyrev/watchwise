@@ -30,7 +30,7 @@ class SyncFilmDataJob implements ShouldQueue
             new SyncFilmJob($this->filmId),
             new SyncTheatersJob($this->filmId),
             new SyncSeasonsJob($this->filmId),
-            // new SyncAwardsJob($this->filmId),
+            new SyncAwardsJob($this->filmId),
             new SyncRelatedFilmsJob($this->filmId),
             new SyncPersonsJob($this->filmId),
             new FilmImportedEventJob($this->filmId),

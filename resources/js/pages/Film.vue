@@ -23,9 +23,9 @@
                     <button class="nav-link" :class="{ 'active': currentTab == 'main' }" @click="currentTab = 'main'" type="button" role="tab">Основное</button>
                 </li>
 
-                <!-- <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#awards" type="button" role="tab">Награды</button>
-                </li> -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" :class="{ 'active': currentTab == 'awards' }" @click="currentTab = 'awards'" type="button" role="tab">Награды</button>
+                </li>
 
                 <li class="nav-item" role="presentation" v-if="film.persons.length">
                     <button class="nav-link" :class="{ 'active': currentTab == 'staff' }" @click="currentTab = 'staff'; currentProfession = 'WRITER'" type="button" role="tab">Состав</button>
@@ -96,6 +96,40 @@
                                 </ul>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" :class="{ 'show active': currentTab == 'awards' }">
+                    <div class="mt-3">
+                        <table class="table-hover table-striped mb-0 table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Название</th>
+                                    <th>Год</th>
+                                    <th>Номинация</th>
+                                    <th>Выиграл</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template v-for="award in film.awards">
+                                    <tr v-for="nomination in award.nominations">
+                                        <td>
+                                            <img :class="{ 'not-win': !nomination.is_win }" height="50" :src="award?.images?.image?.[0]?.urls?.origin">
+                                        </td>
+                                        <td>{{ award.name }}</td>
+                                        <td>{{ nomination.year }}</td>
+                                        <td>
+                                            <div>{{ nomination.name }}</div>
+                                            <template v-for="person in nomination?.persons">
+                                                <router-link :to="{ name: 'persons.show', params: { person: person.id } }" class="text-secondary small me-2">{{ person.name.ru }}</router-link>
+                                            </template>
+                                        </td>
+                                        <td>{{ nomination.is_win ? 'Да' : 'Нет' }}</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="tab-pane fade" :class="{ 'show active': currentTab == 'seasons' }">
@@ -242,5 +276,9 @@
 <style lang="scss" scoped>
     .poster {
         // max-width: 28vw;
+    }
+
+    .not-win {
+        filter: grayscale(100%);
     }
 </style>

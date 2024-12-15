@@ -43,6 +43,7 @@ class FilmResource extends JsonResource
             'seasons' => SeasonResource::collection($this->whenLoaded('seasons')),
             'related_films' => self::collection($this->whenLoaded('relatedFilms')),
             'persons' => PersonResource::collection($this->whenLoaded('persons')),
+            'awards' => AwardResource::collection($this->whenLoaded('awards')),
             'professions' => $this->whenLoaded('professions'),
             'pivot' => $this?->pivot,
         ];
