@@ -13,8 +13,8 @@
             </h3>
 
             <div class="mt-4">
-                <p><strong>Возраст</strong>: {{ person.age }}</p>
-                <p><strong>Рождение</strong>: {{ dayjs(person.birthday).format('D MMMM YYYY') }} <small class="text-secondary" v-if="person?.birth_place">{{ person.birth_place }}</small></p>
+                <p v-if="person.age"><strong>Возраст</strong>: {{ age }}</p>
+                <p v-if="person.birthday"><strong>Рождение</strong>: {{ dayjs(person.birthday).format('D MMMM YYYY') }} <small class="text-secondary" v-if="person?.birth_place">{{ person.birth_place }}</small></p>
                 <p v-if="person?.death"><strong>Смерть</strong>: {{ dayjs(person.death).format('D MMMM YYYY') }} <small class="text-secondary" v-if="person?.birth_place">{{ person.death_place }}</small></p>
                 <p v-if="person.profession">{{ person.profession }}</p>
                 <div v-if="person.facts?.length">
@@ -60,6 +60,25 @@
         }
 
         return person.value.name?.en ? person.value.name.en : person.value.name?.original
+    })
+
+    const age = computed(() => {
+        if (!person.value?.age) {
+            return 'Неизвестен'
+        }
+
+        if (person.value.age % 10 === 1 && person.value.age % 100 !== 11) {
+            return `${person.value.age} год`;
+        }
+
+        if (
+            [2, 3, 4].includes(person.value.age % 10) &&
+            ![12, 13, 14].includes(person.value.age % 100)
+        ) {
+            return `${person.value.age} года`;
+        }
+
+        return `${person.value.age} лет`;
     })
 
 </script>
