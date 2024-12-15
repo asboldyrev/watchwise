@@ -8,15 +8,15 @@
     <nav v-if="totalPages > 1">
         <ul class="pagination">
             <li class="page-item" :class="{ 'disabled': currentPage == 1 }">
-                <router-link :to="{ name: 'index', query: { page: undefined } }" class="page-link">«</router-link>
+                <router-link :to="{ name: 'films.list', query: { page: undefined } }" class="page-link">«</router-link>
             </li>
 
             <li v-for="page in totalPages" class="page-item" :class="{ 'active': currentPage == page }" aria-current="page">
-                <router-link :to="{ name: 'index', query: { page } }" class="page-link">{{ page }}</router-link>
+                <router-link :to="{ name: 'films.list', query: { page } }" class="page-link">{{ page }}</router-link>
             </li>
 
             <li class="page-item" :class="{ 'disabled': currentPage == totalPages }">
-                <router-link class="page-link" :to="{ name: 'index', query: { page: totalPages } }">»</router-link>
+                <router-link class="page-link" :to="{ name: 'films.list', query: { page: totalPages } }">»</router-link>
             </li>
         </ul>
     </nav>

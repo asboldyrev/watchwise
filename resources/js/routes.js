@@ -1,7 +1,7 @@
 import Search from "@app/pages/Search.vue"
-import Film from "@app/pages/Film.vue"
-import Person from "@app/pages/Person.vue"
-import MainPage from "@app/pages/MainPage.vue"
+
+import films from '@app/routes/films'
+import persons from '@app/routes/persons'
 
 export default [
     {
@@ -9,24 +9,15 @@ export default [
         children: [
             {
                 path: '',
-                name: 'index',
-                component: MainPage,
+                redirect: { name: 'films.list' },
             },
             {
                 path: 'search',
                 name: 'search',
                 component: Search,
             },
-            {
-                path: 'films/:film',
-                name: 'films.show',
-                component: Film,
-            },
-            {
-                path: 'persons/:person',
-                name: 'persons.show',
-                component: Person,
-            },
+            ...films,
+            ...persons,
         ],
     },
 ]

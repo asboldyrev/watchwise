@@ -201,7 +201,7 @@
     import { computed, ref, watch } from 'vue'
     import dayjs from '@app/bootstrap/dayjs'
 
-    import AgeLimit from '../components/AgeLimit.vue'
+    import AgeLimit from '@app/components/AgeLimit.vue'
 
     const route = useRoute()
     const filmId = ref(route.params?.film)
