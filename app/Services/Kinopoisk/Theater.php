@@ -20,7 +20,7 @@ class Theater
         $kp_theater = self::syncKinopoiskTheater($film, $kp_film->kinopoiskHDId);
 
         if ($kp_theater) {
-            array_merge($theater_ids, $kp_theater);
+            $theater_ids += $kp_theater;
         }
 
         $online_theaters = $client->getOnlineTheaters($film->id);
