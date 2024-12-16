@@ -8,6 +8,23 @@ use App\Models\Person;
 
 class PersonController extends Controller
 {
+
+    public function list()
+    {
+        $persons = Person
+            ::withCount([
+                'films',
+                'nominations' => fn($query) => $query->where('is_win', true),
+            ])
+            ->with([
+                'media',
+            ])
+            ->orderBy('name->ru')
+            ->paginate(18);
+
+        return PersonResource::collection($persons);
+    }
+
     public function show(Person $person)
     {
         $person

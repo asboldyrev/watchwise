@@ -8,12 +8,16 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ person.name?.ru ? person.name.ru : person.name.en }}</h5>
                     <p v-if="person?.pivot?.description" class="card-text description">{{ person.pivot.description }}</p>
-                    <!-- <p class="card-text"><small class="text-body-secondary">{{ genres }}</small></p> -->
-                    <!-- <span class="badge text-bg-light" v-if="related">{{ relatedFilm }}</span> -->
-
-                    <!-- <div>
-                        <CountryFlag v-for="country in film.countries" :country="country" />
-                    </div> -->
+                    <p v-if="person?.films_count" class="card-text">
+                        <small class="text-body-secondary">
+                            <strong>Фильмов</strong>: {{ person?.films_count }}
+                        </small>
+                    </p>
+                    <p v-if="person?.nominations_count" class="card-text">
+                        <small class="text-body-secondary">
+                            <strong>Наград</strong>: {{ person?.nominations_count }}
+                        </small>
+                    </p>
                 </div>
             </div>
         </div>
