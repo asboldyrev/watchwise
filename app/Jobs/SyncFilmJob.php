@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Jobs\Middlewares\KinopoiskApiLimit;
-use App\Models\Film as ModelsFilm;
 use App\Services\Kinopoisk\Film;
 use App\Services\KinopoiskApiUnofficial\Client;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -15,6 +14,8 @@ use stdClass;
 class SyncFilmJob implements ShouldQueue, ShouldBeUnique
 {
     use Queueable;
+
+    public $timeout = 300;
 
     /**
      * Create a new job instance.
