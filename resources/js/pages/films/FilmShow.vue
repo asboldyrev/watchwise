@@ -136,6 +136,24 @@
                     </div>
                 </div>
 
+                <div class="tab-pane fade" :class="{ 'show active': currentTab == 'staff' }">
+                    <ul class="nav nav-tabs mt-4" role="tablist">
+                        <li v-for="(staff, profession) in film.professions" class="nav-item">
+                            <button class="nav-link" :class="{ 'active': currentProfession == profession }" @click="currentProfession = profession" type="button" role="tab">{{ professionName(profession) }}</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content mt-3" id="myTabContent">
+                        <div v-for="(staff, profession) in film.professions" class="tab-pane fade" :class="{ 'show active': currentProfession == profession }">
+                            <div class="row">
+                                <div v-for="person in film.persons.filter(person => staff.includes(person.id))" class="col-sm-3 my-2">
+                                    <PersonCard :person="person" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="tab-pane fade" :class="{ 'show active': currentTab == 'seasons' }">
                     <table class="table-hover table-striped mb-0 table">
                         <thead>
@@ -167,24 +185,6 @@
                             @endforeach -->
                         </tbody>
                     </table>
-                </div>
-
-                <div class="tab-pane fade" :class="{ 'show active': currentTab == 'staff' }">
-                    <ul class="nav nav-tabs mt-4" role="tablist">
-                        <li v-for="(staff, profession) in film.professions" class="nav-item">
-                            <button class="nav-link" :class="{ 'active': currentProfession == profession }" @click="currentProfession = profession" type="button" role="tab">{{ professionName(profession) }}</button>
-                        </li>
-                    </ul>
-
-                    <div class="tab-content mt-3" id="myTabContent">
-                        <div v-for="(staff, profession) in film.professions" class="tab-pane fade" :class="{ 'show active': currentProfession == profession }">
-                            <div class="row">
-                                <div v-for="person in film.persons.filter(person => staff.includes(person.id))" class="col-sm-2 my-2">
-                                    <PersonCard :person="person" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
