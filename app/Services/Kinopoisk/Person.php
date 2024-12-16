@@ -25,12 +25,14 @@ class Person
         }
 
         $person_ids = [];
+        $need_sync = false;
         foreach ($persons as $person_data) {
             $person = ModelsPerson::find($person_data->staffId);
 
             if (!$person) {
-                self::sync($person_data->staffId);
-                $person = ModelsPerson::find($person_data->staffId);
+                SyncPersonJob::dispatch($person_data->staffId);
+                $need_sync = true;
+                continue;
             }
 
             $person_ids[$person->id] = [
@@ -41,6 +43,10 @@ class Person
         }
 
         $film->persons()->sync($person_ids);
+
+        if ($need_sync) {
+            SyncPersonsJob::dispatch($filmId);
+        }
     }
 
     public static function sync(int $personId)
