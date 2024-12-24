@@ -1,5 +1,5 @@
 <template>
-    <div class="row mt-3 mb-4">
+    <div class="row mt-3 mb-4 g-4 align-items-stretch">
         <div class="col-sm-3" v-for="film in films">
             <FilmCard :film="film" />
         </div>

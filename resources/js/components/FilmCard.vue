@@ -1,5 +1,5 @@
 <template>
-    <router-link :to="{ name: 'films.show', params: { film: film.id } }" class="card mb-3">
+    <router-link :to="{ name: 'films.show', params: { film: film.id } }" class="card">
         <AgeLimit :film="film" small />
         <div class="row g-0">
             <div class="col-md-4">
@@ -7,7 +7,7 @@
             </div>
             <div class="col-md-8">
                 <div class="card-body">
-                    <h5 class="card-title">{{ name }} <span class="text-secondary">{{ film.year }}</span></h5>
+                    <h5 class="card-title" :title="name"><span class="title">{{ name }}</span> <span class="text-secondary">{{ film.year }}</span></h5>
                     <p class="card-text description">{{ film.description }}</p>
                     <p class="card-text"><small class="text-body-secondary">{{ genres }}</small></p>
                     <span class="badge text-bg-light" v-if="related">{{ relatedFilm }}</span>
@@ -84,5 +84,17 @@
     .img-fluid {
         height: 100%;
         object-fit: cover;
+    }
+
+    .title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        box-orient: vertical;
+        -moz-box-orient: vertical;
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
+        display: -moz-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
     }
 </style>
