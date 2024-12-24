@@ -38,6 +38,7 @@ export default defineConfig(({ command, mode }) => {
             watch: {
                 ignored: [
                     '**/public/media/**', // Исключаем папку с загружаемыми файлами
+                    '**/vendor/**',
                 ],
             },
         },
