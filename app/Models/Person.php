@@ -7,8 +7,10 @@ use App\Enums\Sex;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Person extends Model implements HasMedia
 {
@@ -80,5 +82,17 @@ class Person extends Model implements HasMedia
         $this
             ->addMediaCollection('poster')
             ->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $width = 208 * 1.5;
+        $height = 304 * 1.5;
+
+        $this
+            ->addMediaConversion('card')
+            ->height($height)
+            ->crop($width, $height, CropPosition::Center)
+            ->nonQueued();
     }
 }

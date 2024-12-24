@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Image\Enums\CropPosition;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -102,9 +103,15 @@ class Film extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
+        $width = 151 * 1.5;
+        $height = 227 * 1.5;
+
         $this
             ->addMediaConversion('card')
-            ->fit(Fit::Max, 151, 227)
+            ->height($height)
+            // ->width($width)
+            // ->fit(Fit::Max, $width, $height)
+            ->crop($width, $height, CropPosition::Center)
             ->nonQueued();
     }
 }
