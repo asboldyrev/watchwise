@@ -20,7 +20,7 @@ class PersonController extends Controller
                 'media',
             ])
             ->orderBy('name->ru')
-            ->paginate(18);
+            ->paginate(24);
 
         return PersonResource::collection($persons);
     }
