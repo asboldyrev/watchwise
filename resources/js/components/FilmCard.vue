@@ -1,7 +1,7 @@
 <template>
-    <router-link :to="{ name: 'films.show', params: { film: film.id } }" class="card">
+    <router-link :to="{ name: 'films.show', params: { film: film.id } }" class="card h-100">
         <AgeLimit :film="film" small />
-        <div class="row g-0">
+        <div class="row g-0 h-100">
             <div class="col-md-4">
                 <img loading="lazy" :src="film.images.poster?.[0]?.urls?.card" class="img-fluid rounded-start" alt="">
             </div>

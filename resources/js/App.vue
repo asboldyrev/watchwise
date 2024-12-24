@@ -1,6 +1,6 @@
 <template>
     <VMenu />
-    <div class="container-fluid">
+    <div class="container-fluid mb-4">
         <router-view />
     </div>
     <Alert />

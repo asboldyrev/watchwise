@@ -1,8 +1,8 @@
 <template>
-    <router-link :to="{ name: 'persons.show', params: { person: person.id } }" class="card text-decoration-none">
-        <div class="row g-0">
+    <router-link :to="{ name: 'persons.show', params: { person: person.id } }" class="card text-decoration-none h-100">
+        <div class="row g-0 h-100">
             <div class="col-md-4">
-                <img loading="lazy" v-if="person.images?.poster?.[0]?.urls?.origin" class="img-fluid" :src="person.images?.poster?.[0]?.urls?.origin" :alt="person.name?.ru ? person.name.ru : person.name.en">
+                <img loading="lazy" v-if="person.images?.poster?.[0]?.urls?.origin" class="img-fluid rounded-start" :src="person.images?.poster?.[0]?.urls?.origin" :alt="person.name?.ru ? person.name.ru : person.name.en">
             </div>
             <div class="col-md-8">
                 <div class="card-body">
@@ -37,5 +37,10 @@
     .card {
         text-decoration: none;
         overflow: hidden;
+    }
+
+    .img-fluid {
+        height: 100%;
+        object-fit: cover;
     }
 </style>

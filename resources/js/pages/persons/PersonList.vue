@@ -1,5 +1,5 @@
 <template>
-    <div class="row mt-3 mb-4 gy-3">
+    <div class="row mt-3 mb-4 g-3">
         <div class="col-sm-2" v-for="person in persons">
             <PersonCard :person="person" />
         </div>
