@@ -9,8 +9,6 @@
 </template>
 
 <script setup>
-    import FilmCard from '@app/components/FilmCard.vue'
-
     import { filmList } from '@app/api/films'
     import { ref, watch } from 'vue'
     import { useRoute } from 'vue-router'

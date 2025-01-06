@@ -86,6 +86,11 @@ class Film extends Model implements HasMedia
         return $this->hasMany(Nomination::class);
     }
 
+    public function watchlists(): BelongsToMany
+    {
+        return $this->belongsToMany(Watchlist::class)->using(FilmWatchList::class)->withPivot(['date']);
+    }
+
     public function registerMediaCollections(): void
     {
         $this

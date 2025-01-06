@@ -22,7 +22,7 @@ class FilmController extends Controller
         return FilmResource::make($films);
     }
 
-    public function list()
+    public function list(Request $request)
     {
         $films = Film
             ::with([
@@ -30,6 +30,13 @@ class FilmController extends Controller
                 'genres',
                 'media',
             ])
+            ->when(
+                $request->input('watchlist'),
+                fn($query) => $query->whereHas(
+                    'watchlists',
+                    fn($query) => $query->where('watchlists.id', $request->input('watchlist'))
+                )
+            )
             ->orderBy('year', 'desc')
             ->paginate(16);
 

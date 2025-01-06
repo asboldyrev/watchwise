@@ -1,2 +1,6 @@
 @import "bootstrap";
 @import "remixicon/fonts/remixicon.css";
+
+[v-cloak] {
+    display: none;
+}

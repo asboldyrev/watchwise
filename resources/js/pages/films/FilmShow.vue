@@ -18,6 +18,8 @@
                 {{ film.name.en ? film.name.en : film.name.original }}
             </h3>
 
+            <WatchListButton :film-id="filmId" />
+
             <ul class="nav nav-tabs mt-4" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" :class="{ 'active': currentTab == 'main' }" @click="currentTab = 'main'" type="button" role="tab">Основное</button>
@@ -198,8 +200,8 @@
 </template>
 
 <script setup>
-    import FilmCard from '@app/components/FilmCard.vue'
     import PersonCard from '@app/components/PersonCard.vue'
+    import WatchListButton from '../../components/WatchListButton.vue'
 
     import { useRoute } from 'vue-router'
     import { filmShow } from '@app/api/films'

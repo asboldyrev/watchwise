@@ -50,11 +50,16 @@
             type: String,
             required: true,
         },
+        params: {
+            type: Object,
+            required: false,
+            default: {},
+        }
     })
 
     // Функция для создания ссылки на страницу
     const getPageRoute = (page) => {
-        return { name: props.routeName, query: { page } }
+        return { name: props.routeName, params: props.params, query: { page } }
     }
 
     // Генерация номеров страниц с разрывами
